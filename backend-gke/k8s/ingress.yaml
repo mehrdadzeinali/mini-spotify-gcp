@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wavely-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /songs
+            pathType: Prefix
+            backend:
+              service:
+                name: songs-service
+                port:
+                  number: 3001
+          - path: /playlists
+            pathType: Prefix
+            backend:
+              service:
+                name: playlists-service
+                port:
+                  number: 3002
+          - path: /streaming
+            pathType: Prefix
+            backend:
+              service:
+                name: streaming-service
+                port:
+                  number: 3003

@@ -31,4 +31,14 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/genres', async (req, res) => {
+  try {
+    const snapshot = await firestore.collection('songs').get();
+    const genres = [...new Set(snapshot.docs.map(doc => doc.data()['genre']).filter(Boolean))];
+    res.json(genres);
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 export default router;
