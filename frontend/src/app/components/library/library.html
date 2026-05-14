@@ -1,0 +1,160 @@
+<div class="library-page">
+
+  <!-- Header -->
+  <div class="library-header">
+    <h1>Your Library</h1>
+    <div class="tabs">
+      <button class="tab" [class.active]="activeTab === 'liked'" (click)="activeTab = 'liked'">
+        ❤️ Liked Songs
+      </button>
+      <button class="tab" [class.active]="activeTab === 'playlists'" (click)="activeTab = 'playlists'">
+        🎵 Playlists
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading"><div class="spinner"></div></div>
+  } @else {
+
+    <!-- LIKED SONGS TAB -->
+    @if (activeTab === 'liked') {
+      @if (likedSongs.length === 0) {
+        <div class="empty-state">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.15"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <p>No liked songs yet</p>
+          <p style="font-size:12px;opacity:0.5">Like songs to see them here</p>
+        </div>
+      } @else {
+        <div class="liked-header">
+          <button class="play-all-btn" (click)="play(likedSongs[0], likedSongs)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Play All
+          </button>
+          <p>{{ likedSongs.length }} songs</p>
+        </div>
+        <div class="songs-list">
+          @for (song of likedSongs; track song.id; let i = $index) {
+            <div class="song-item" [class.active]="(player.currentSong$ | async)?.id === song.id">
+              <span class="song-index">{{ i + 1 }}</span>
+              <div class="song-cover-sm">
+                @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
+                <div class="play-overlay" (click)="play(song, likedSongs)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <div class="song-info" (click)="play(song, likedSongs)">
+                <p class="song-title">{{ song.title }}</p>
+                <p class="song-artist">{{ song.artist }}</p>
+              </div>
+              <div class="song-actions">
+                <button class="action-btn liked" title="Unlike">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
+                <button class="action-btn" (click)="showAddToPlaylist = song" title="Add to playlist">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- PLAYLISTS TAB -->
+    @if (activeTab === 'playlists') {
+      <div class="playlists-header">
+        <button class="create-btn" (click)="showCreatePlaylist = true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          New Playlist
+        </button>
+      </div>
+
+      @if (showCreatePlaylist) {
+        <div class="create-playlist-form">
+          <input [(ngModel)]="newPlaylistName" placeholder="Playlist name..." (keyup.enter)="createPlaylist()" />
+          <button class="btn-primary" (click)="createPlaylist()">Create</button>
+          <button class="btn-ghost" (click)="showCreatePlaylist = false">Cancel</button>
+        </div>
+      }
+
+      @if (playlists.length === 0 && !showCreatePlaylist) {
+        <div class="empty-state">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.15"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <p>No playlists yet</p>
+          <p style="font-size:12px;opacity:0.5">Create a playlist to organize your music</p>
+        </div>
+      }
+
+      <div class="playlists-grid">
+        @for (playlist of playlists; track playlist.id) {
+          <div class="playlist-card" (click)="selectedPlaylist = selectedPlaylist?.id === playlist.id ? null : playlist">
+            <div class="playlist-cover">
+              @if (getPlaylistSongs(playlist)[0]?.cover) {
+                <img [src]="getPlaylistSongs(playlist)[0].cover" alt="playlist" />
+              } @else {
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.3"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+              }
+            </div>
+            <div class="playlist-info">
+              <p class="playlist-name">{{ playlist.name }}</p>
+              <p class="playlist-count">{{ playlist.songs.length }} songs</p>
+            </div>
+            <div class="playlist-actions">
+              @if (getPlaylistSongs(playlist).length > 0) {
+                <button class="action-btn" (click)="$event.stopPropagation(); play(getPlaylistSongs(playlist)[0], getPlaylistSongs(playlist))">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+              }
+              <button class="action-btn danger" (click)="$event.stopPropagation(); deletePlaylist(playlist)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Expanded playlist songs -->
+          @if (selectedPlaylist?.id === playlist.id) {
+            <div class="playlist-songs">
+              @if (getPlaylistSongs(playlist).length === 0) {
+                <p class="empty-playlist">No songs yet — add songs from the search page</p>
+              } @else {
+                @for (song of getPlaylistSongs(playlist); track song.id) {
+                  <div class="song-item" (click)="play(song, getPlaylistSongs(playlist))" [class.active]="(player.currentSong$ | async)?.id === song.id">
+                    <div class="song-cover-sm">
+                      @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
+                    </div>
+                    <div class="song-info">
+                      <p class="song-title">{{ song.title }}</p>
+                      <p class="song-artist">{{ song.artist }}</p>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        }
+      </div>
+    }
+  }
+
+  <!-- Add to Playlist Modal -->
+  @if (showAddToPlaylist) {
+    <div class="modal-overlay" (click)="showAddToPlaylist = null">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Add to Playlist</h3>
+        <p class="modal-song">{{ showAddToPlaylist.title }}</p>
+        @if (playlists.length === 0) {
+          <p style="color:rgba(255,255,255,0.35);font-size:13px">No playlists yet. Create one first.</p>
+        } @else {
+          @for (playlist of playlists; track playlist.id) {
+            <button class="playlist-option" (click)="addToPlaylist(playlist.id!, showAddToPlaylist!.id)">
+              {{ playlist.name }}
+            </button>
+          }
+        }
+        <button class="btn-ghost" (click)="showAddToPlaylist = null">Cancel</button>
+      </div>
+    </div>
+  }
+
+</div>

@@ -13,6 +13,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'playlists-service' });
 });
 
+app.get('/', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.use('/playlists', verifyToken, playlistsRouter);
 
 app.listen(PORT, () => {

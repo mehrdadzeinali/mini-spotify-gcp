@@ -1,0 +1,30 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: wavely-routes
+  namespace: default
+spec:
+  parentRefs:
+    - name: wavely-gateway
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /songs
+      backendRefs:
+        - name: songs-service
+          port: 3001
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /playlists
+      backendRefs:
+        - name: playlists-service
+          port: 3002
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /streaming
+      backendRefs:
+        - name: streaming-service
+          port: 3003

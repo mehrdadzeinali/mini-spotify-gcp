@@ -13,6 +13,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'streaming-service' });
 });
 
+app.get('/', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.use('/streaming', verifyToken, streamingRouter);
 
 app.listen(PORT, () => {

@@ -25,8 +25,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: playlists-service
-  annotations:
-    cloud.google.com/backend-config: '{"default": "playlists-backend-config"}'
 spec:
   selector:
     app: playlists-service
@@ -34,4 +32,4 @@ spec:
     - protocol: TCP
       port: 3002
       targetPort: 3002
-  type: NodePort
+  type: ClusterIP

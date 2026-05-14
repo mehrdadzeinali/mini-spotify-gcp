@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Auth } from '@angular/fire/auth';
 import { from, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Song } from './player';
 
 @Injectable({ providedIn: 'root' })
 export class SongsService {
@@ -23,12 +24,17 @@ export class SongsService {
     let params = new HttpParams()
       .set('limit', limit.toString())
       .set('offset', offset.toString());
-
     if (search) params = params.set('search', search);
     if (genre) params = params.set('genre', genre);
 
     return this.getHeaders().pipe(
-      switchMap(headers => this.http.get<any[]>(`${this.apiUrl}/songs`, { headers, params }))
+      switchMap(headers => this.http.get<Song[]>(`${this.apiUrl}/songs`, { headers, params }))
+    );
+  }
+
+  getGenres() {
+    return this.getHeaders().pipe(
+      switchMap(headers => this.http.get<string[]>(`${this.apiUrl}/songs/genres`, { headers }))
     );
   }
 
