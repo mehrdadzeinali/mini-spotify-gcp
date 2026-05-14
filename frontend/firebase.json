@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "target": "playwavely",
     "public": "dist/mini-spotify/browser",
     "ignore": [
       "firebase.json",

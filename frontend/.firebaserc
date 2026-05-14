@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "mini-spotify-gcp"
-  }
+  },
+  "targets": {
+    "mini-spotify-gcp": {
+      "hosting": {
+        "playwavely": [
+          "playwavely"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
