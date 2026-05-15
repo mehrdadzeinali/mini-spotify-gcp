@@ -5,6 +5,7 @@ import { SearchComponent } from './components/search/search';
 import { LibraryComponent } from './components/library/library';
 import { LayoutComponent } from './components/layout/layout';
 import { authGuard } from './guards/auth-guard';
+import { GenresComponent } from './components/genres/genres';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -17,6 +18,8 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'search', component: SearchComponent },
       { path: 'library', component: LibraryComponent },
+      { path: 'genres', component: GenresComponent },
+      { path: 'genres/:genre', component: GenresComponent },
     ]
   }
 ];
