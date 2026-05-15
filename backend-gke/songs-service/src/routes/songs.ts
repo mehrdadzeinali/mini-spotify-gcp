@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import firestore from '../firestore';
+import { BigQuery } from '@google-cloud/bigquery';
 
 const router = Router();
+const bigquery = new BigQuery({ projectId: 'mini-spotify-gcp' });
 
 router.get('/', async (req, res) => {
   try {
@@ -37,6 +39,31 @@ router.get('/genres', async (req, res) => {
     const genres = [...new Set(snapshot.docs.map(doc => doc.data()['genre']).filter(Boolean))];
     res.json(genres);
   } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
+router.get('/trending', async (req, res) => {
+  try {
+    const [rows] = await bigquery.query(`
+      SELECT songId, title, artist, genre, COUNT(*) as plays
+      FROM \`mini-spotify-gcp.wavely_analytics.play_events\`
+      WHERE eventType = 'PLAY'
+      GROUP BY songId, title, artist, genre
+      ORDER BY plays DESC
+      LIMIT 20
+    `);
+
+    // Enrich with Firestore data to get cover URLs
+    const enriched = await Promise.all(rows.map(async (row: any) => {
+      const doc = await firestore.collection('songs').doc(row.songId).get();
+      const firestoreData = doc.exists ? doc.data() : {};
+      return { ...row, ...firestoreData };
+    }));
+
+    res.json(enriched);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: String(error) });
   }
 });

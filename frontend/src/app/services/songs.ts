@@ -43,4 +43,10 @@ export class SongsService {
       switchMap(headers => this.http.get<any[]>(`${this.apiUrl}/playlists`, { headers }))
     );
   }
+
+  getTrending() {
+    return this.getHeaders().pipe(
+      switchMap(headers => this.http.get<any[]>(`${this.apiUrl}/songs/trending`, { headers }))
+    );
+  }
 }

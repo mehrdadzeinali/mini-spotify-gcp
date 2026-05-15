@@ -40,14 +40,19 @@ export class HomeComponent implements OnInit {
 
   loadAll() {
     this.isLoading = true;
+
     this.songsService.getSongs(undefined, undefined, 50, 0).subscribe(songs => {
       const shuffled = [...songs].sort(() => Math.random() - 0.5);
-      this.trending = shuffled.slice(0, 10);
-      this.forYou = shuffled.slice(10, 20);
-      this.random = shuffled.slice(20, 30);
+      this.forYou = shuffled.slice(0, 10);
+      this.random = shuffled.slice(10, 20);
       this.recentlyAdded = songs.slice(0, 10);
       this.player.setQueue(songs);
       this.isLoading = false;
+      this.cdr.detectChanges();
+    });
+
+    this.songsService.getTrending().subscribe(trending => {
+      this.trending = trending;
       this.cdr.detectChanges();
     });
 
