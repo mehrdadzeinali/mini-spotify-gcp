@@ -13,7 +13,7 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './layout.html',
-  styleUrls : ['./layout.css']
+  styleUrls: ['./layout.css']
 })
 export class LayoutComponent implements OnInit {
   private router = inject(Router);
@@ -28,6 +28,7 @@ export class LayoutComponent implements OnInit {
   showPlaylistModal = false;
   playlists: Playlist[] = [];
   likedIds: string[] = [];
+  toast: string | null = null;
 
   constructor() {
     this.router.events.pipe(
@@ -40,13 +41,26 @@ export class LayoutComponent implements OnInit {
     this.player.currentSong$.subscribe(song => {
       if (song) {
         this.isLiked = this.likedIds.includes(song.id);
+      } else {
+        this.isLiked = false;
       }
     });
   }
 
   ngOnInit() {
-    this.loadLikes();
-    this.loadPlaylists();
+    // Fix 5 — reload likes and playlists when user changes
+    this.auth.user$.subscribe(user => {
+      if (user) {
+        this.loadLikes();
+        this.loadPlaylists();
+      } else {
+        // Fix 5 — stop music and clear state on logout
+        this.player.stop();
+        this.likedIds = [];
+        this.playlists = [];
+        this.isLiked = false;
+      }
+    });
   }
 
   loadLikes() {
@@ -65,23 +79,39 @@ export class LayoutComponent implements OnInit {
   }
 
   loadPlaylists() {
-    this.playlistsService.getPlaylists().subscribe(p => this.playlists = p);
+    this.playlistsService.getPlaylists().subscribe();
+    // Subscribe to shared state
+    this.playlistsService.playlists$.subscribe(p => {
+      this.playlists = p;
+    });
   }
 
+  // Fix — toggle like/unlike from player bar
   toggleLike() {
     const song = this.player.currentSong$.value;
     if (!song) return;
     this.auth.user$.subscribe(user => {
       if (!user) return;
       user.getIdToken().then(token => {
-        this.http.post(`${environment.apiUrl}/streaming/like`, { songId: song.id }, {
-          headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
-        }).subscribe(() => {
-          if (!this.likedIds.includes(song.id)) {
+        if (this.isLiked) {
+          // Unlike
+          this.http.delete(`${environment.apiUrl}/streaming/like/${song.id}`, {
+            headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+          }).subscribe(() => {
+            this.likedIds = this.likedIds.filter(id => id !== song.id);
+            this.isLiked = false;
+            this.showToast('Removed from liked songs');
+          });
+        } else {
+          // Like
+          this.http.post(`${environment.apiUrl}/streaming/like`, { songId: song.id }, {
+            headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+          }).subscribe(() => {
             this.likedIds.push(song.id);
             this.isLiked = true;
-          }
-        });
+            this.showToast('Added to liked songs ❤️');
+          });
+        }
       });
     });
   }
@@ -91,7 +121,13 @@ export class LayoutComponent implements OnInit {
     if (!song) return;
     this.playlistsService.addSongToPlaylist(playlistId, song.id).subscribe(() => {
       this.showPlaylistModal = false;
+      this.showToast('Added to playlist ✓');
     });
+  }
+
+  showToast(message: string) {
+    this.toast = message;
+    setTimeout(() => { this.toast = null; }, 2500);
   }
 
   toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
@@ -100,6 +136,8 @@ export class LayoutComponent implements OnInit {
   setVolume(event: any) { this.player.setVolume(parseFloat(event.target.value)); }
 
   async logout() {
+    // Fix 5 — stop music before logout
+    this.player.stop();
     await this.auth.logout();
     this.router.navigate(['/login']);
   }

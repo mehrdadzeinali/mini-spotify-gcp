@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.html',
-  styleUrls : ['./home.css']
+  styleUrls: ['./home.css']
 })
 export class HomeComponent implements OnInit {
   private songsService = inject(SongsService);
@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   private auth = inject(AuthService);
   player = inject(PlayerService);
 
+  currentQueue: 'trending' | 'forYou' | 'random' | 'recently' | null = null;
   trending: Song[] = [];
   forYou: Song[] = [];
   random: Song[] = [];
@@ -42,30 +43,37 @@ export class HomeComponent implements OnInit {
 
   loadAll() {
     this.isLoading = true;
-  
+    const usedIds = new Set<string>();
+
+    this.songsService.getTrending().subscribe(trending => {
+      this.trending = trending;
+      trending.forEach(s => usedIds.add(s.id));
+      this.cdr.detectChanges();
+    });
+
     this.auth.user$.subscribe(user => {
       if (!user) return;
-    
       this.songsService.getRecommendations(user.uid).subscribe(recommendations => {
-        this.forYou = recommendations;
+        // Fix 6 — exclude songs already in trending
+        this.forYou = recommendations.filter(s => !usedIds.has(s.id));
+        this.forYou.forEach(s => usedIds.add(s.id));
         this.cdr.detectChanges();
       });
     });
-  
+
     this.songsService.getSongs(undefined, undefined, 50, 0).subscribe(songs => {
       const shuffled = [...songs].sort(() => Math.random() - 0.5);
-      this.random = shuffled.slice(0, 10);
-      this.recentlyAdded = songs.slice(0, 10);
-      this.player.setQueue(songs);
+
+      // Fix 6 — exclude songs already used in trending and forYou
+      this.random = shuffled.filter(s => !usedIds.has(s.id)).slice(0, 10);
+      this.random.forEach(s => usedIds.add(s.id));
+
+      this.recentlyAdded = songs.filter(s => !usedIds.has(s.id)).slice(0, 10);
+
       this.isLoading = false;
       this.cdr.detectChanges();
     });
-  
-    this.songsService.getTrending().subscribe(trending => {
-      this.trending = trending;
-      this.cdr.detectChanges();
-    });
-  
+
     this.songsService.getGenres().subscribe(genres => {
       this.genres = genres.filter(g => g !== 'Unknown').sort().slice(0, 10);
       this.cdr.detectChanges();
@@ -76,7 +84,8 @@ export class HomeComponent implements OnInit {
     return getGenreColor(genre);
   }
 
-  play(song: Song, queue: Song[]) {
+  play(song: Song, queue: Song[], queueName: 'trending' | 'forYou' | 'random' | 'recently') {
+    this.currentQueue = queueName;
     this.player.setQueue(queue);
     this.player.playSong(song);
   }

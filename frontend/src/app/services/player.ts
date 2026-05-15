@@ -28,6 +28,8 @@ export class PlayerService {
   duration$ = new BehaviorSubject<number>(0);
   volume$ = new BehaviorSubject<number>(1);
   queue$ = new BehaviorSubject<Song[]>([]);
+  isShuffle$ = new BehaviorSubject<boolean>(false);
+  isLoop$ = new BehaviorSubject<'none' | 'one' | 'all'>('none');
 
   constructor() {
     this.audio.ontimeupdate = () => {
@@ -63,12 +65,36 @@ export class PlayerService {
     }
   }
 
+  // Fix 5 — Stop music completely and reset state
+  stop() {
+    this.audio.pause();
+    this.audio.src = '';
+    this.currentSong$.next(null);
+    this.isPlaying$.next(false);
+    this.currentTime$.next(0);
+    this.duration$.next(0);
+    this.queue$.next([]);
+  }
+
   next() {
     const queue = this.queue$.value;
     const current = this.currentSong$.value;
     if (!queue.length || !current) return;
-    const index = queue.findIndex(s => s.id === current.id);
-    const nextSong = queue[index + 1] || queue[0];
+  
+    if (this.isLoop$.value === 'one') {
+      this.playSong(current);
+      return;
+    }
+  
+    let nextSong: Song;
+    if (this.isShuffle$.value) {
+      const others = queue.filter(s => s.id !== current.id);
+      nextSong = others[Math.floor(Math.random() * others.length)];
+    } else {
+      const index = queue.findIndex(s => s.id === current.id);
+      nextSong = queue[index + 1] || (this.isLoop$.value === 'all' ? queue[0] : current);
+    }
+  
     this.playSong(nextSong);
   }
 
@@ -79,6 +105,17 @@ export class PlayerService {
     const index = queue.findIndex(s => s.id === current.id);
     const prevSong = queue[index - 1] || queue[queue.length - 1];
     this.playSong(prevSong);
+  }
+
+  toggleShuffle() {
+    this.isShuffle$.next(!this.isShuffle$.value);
+  }
+  
+  toggleLoop() {
+    const current = this.isLoop$.value;
+    if (current === 'none') this.isLoop$.next('all');
+    else if (current === 'all') this.isLoop$.next('one');
+    else this.isLoop$.next('none');
   }
 
   seek(seconds: number) {

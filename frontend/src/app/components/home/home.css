@@ -91,6 +91,12 @@
   border-color: rgba(79,110,247,0.15);
 }
 
+.song-card.for-you.active {
+  border-color: #4f6ef7;
+  border-width: 2px;
+  background: rgba(79,110,247,0.15);
+}
+
 .song-card.for-you:hover { background: rgba(79,110,247,0.12); }
 
 .song-cover {

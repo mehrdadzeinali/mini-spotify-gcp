@@ -14,7 +14,8 @@
       </div>
       <div class="scroll-row">
         @for (song of trending; track song.id) {
-          <div class="song-card" (click)="play(song, trending)" [class.active]="(player.currentSong$ | async)?.id === song.id">
+          <div class="song-card" (click)="play(song, trending, 'trending')"
+            [class.active]="(player.currentSong$ | async)?.id === song.id && currentQueue === 'trending'">
             <div class="song-cover">
               @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
               <div class="play-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
@@ -33,7 +34,8 @@
       </div>
       <div class="scroll-row">
         @for (song of forYou; track song.id) {
-          <div class="song-card for-you" (click)="play(song, forYou)" [class.active]="(player.currentSong$ | async)?.id === song.id">
+          <div class="song-card for-you" (click)="play(song, forYou, 'forYou')"
+            [class.active]="(player.currentSong$ | async)?.id === song.id && currentQueue === 'forYou'">
             <div class="song-cover">
               @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
               <div class="play-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
@@ -52,7 +54,8 @@
       </div>
       <div class="scroll-row">
         @for (song of random; track song.id) {
-          <div class="song-card" (click)="play(song, random)" [class.active]="(player.currentSong$ | async)?.id === song.id">
+          <div class="song-card" (click)="play(song, random, 'random')"
+            [class.active]="(player.currentSong$ | async)?.id === song.id && currentQueue === 'random'">
             <div class="song-cover">
               @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
               <div class="play-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
@@ -70,8 +73,9 @@
         <h2>🆕 Recently added</h2>
       </div>
       <div class="recently-list">
-        @for (song of recentlyAdded; track song.id; let i = $index) {
-          <div class="recently-item" (click)="play(song, recentlyAdded)" [class.active]="(player.currentSong$ | async)?.id === song.id">
+        @for (song of recentlyAdded; track song.id) {
+          <div class="recently-item" (click)="play(song, recentlyAdded, 'recently')"
+            [class.active]="(player.currentSong$ | async)?.id === song.id && currentQueue === 'recently'">
             <div class="recently-cover">
               @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
               <div class="play-overlay"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>

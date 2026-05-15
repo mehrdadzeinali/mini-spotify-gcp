@@ -1,6 +1,7 @@
 .library-page {
   padding: 32px;
   min-height: 100%;
+  position: relative;
 }
 
 .library-header {
@@ -63,6 +64,30 @@
   padding: 80px 0;
   color: rgba(255,255,255,0.25);
   font-size: 14px;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4f6ef7;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 500;
+  animation: fadeInOut 2.5s ease forwards;
+  white-space: nowrap;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
 }
 
 /* LIKED SONGS */
@@ -132,6 +157,7 @@
   overflow: hidden;
   position: relative;
   background: rgba(79,110,247,0.15);
+  flex-shrink: 0;
 }
 
 .song-cover-sm img {
@@ -322,14 +348,29 @@
 
 .playlist-card:hover .playlist-actions { opacity: 1; }
 
+/* EXPANDED PLAYLIST SONGS */
 .playlist-songs {
-  margin: 0 0 8px 70px;
+  margin: 4px 0 8px 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 8px 0;
+  gap: 2px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
   border-left: 2px solid rgba(79,110,247,0.3);
-  padding-left: 16px;
+}
+
+.playlist-songs .song-item {
+  grid-template-columns: 56px 1fr auto;
+}
+
+.playlist-songs .song-cover-sm {
+  width: 56px;
+  height: 56px;
+}
+
+.playlist-songs .song-actions {
+  opacity: 1;
 }
 
 .empty-playlist {
@@ -355,9 +396,12 @@
   border-radius: 16px;
   padding: 24px;
   min-width: 280px;
+  max-width: 90vw;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .modal h3 {
@@ -393,4 +437,5 @@
   .song-index { display: none; }
   .song-actions { opacity: 1; }
   .playlist-actions { opacity: 1; }
+  .playlist-songs .song-item { grid-template-columns: 56px 1fr auto; }
 }

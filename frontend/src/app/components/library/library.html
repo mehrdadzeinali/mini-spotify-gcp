@@ -1,5 +1,10 @@
 <div class="library-page">
 
+  <!-- Toast notification -->
+  @if (toast) {
+    <div class="toast">{{ toast }}</div>
+  }
+
   <!-- Header -->
   <div class="library-header">
     <h1>Your Library</h1>
@@ -48,7 +53,8 @@
                 <p class="song-artist">{{ song.artist }}</p>
               </div>
               <div class="song-actions">
-                <button class="action-btn liked" title="Unlike">
+                <!-- Fix 1 — Unlike button -->
+                <button class="action-btn liked" title="Unlike" (click)="unlikeSong(song)">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
                 <button class="action-btn" (click)="showAddToPlaylist = song" title="Add to playlist">
@@ -72,7 +78,7 @@
 
       @if (showCreatePlaylist) {
         <div class="create-playlist-form">
-          <input [(ngModel)]="newPlaylistName" placeholder="Playlist name..." (keyup.enter)="createPlaylist()" />
+          <input [(ngModel)]="newPlaylistName" placeholder="Playlist name..." (keyup.enter)="createPlaylist()" autofocus />
           <button class="btn-primary" (click)="createPlaylist()">Create</button>
           <button class="btn-ghost" (click)="showCreatePlaylist = false">Cancel</button>
         </div>
@@ -112,20 +118,28 @@
             </div>
           </div>
 
-          <!-- Expanded playlist songs -->
+          <!-- Fix 3 — Expanded playlist with remove song button -->
           @if (selectedPlaylist?.id === playlist.id) {
             <div class="playlist-songs">
               @if (getPlaylistSongs(playlist).length === 0) {
                 <p class="empty-playlist">No songs yet — add songs from the search page</p>
               } @else {
                 @for (song of getPlaylistSongs(playlist); track song.id) {
-                  <div class="song-item" (click)="play(song, getPlaylistSongs(playlist))" [class.active]="(player.currentSong$ | async)?.id === song.id">
+                  <div class="song-item" [class.active]="(player.currentSong$ | async)?.id === song.id">
                     <div class="song-cover-sm">
                       @if (song.cover) { <img [src]="song.cover" [alt]="song.title" /> }
+                      <div class="play-overlay" (click)="play(song, getPlaylistSongs(playlist))">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
                     </div>
-                    <div class="song-info">
+                    <div class="song-info" (click)="play(song, getPlaylistSongs(playlist))">
                       <p class="song-title">{{ song.title }}</p>
                       <p class="song-artist">{{ song.artist }}</p>
+                    </div>
+                    <div class="song-actions">
+                      <button class="action-btn danger" title="Remove from playlist" (click)="removeSongFromPlaylist(playlist, song.id)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                      </button>
                     </div>
                   </div>
                 }

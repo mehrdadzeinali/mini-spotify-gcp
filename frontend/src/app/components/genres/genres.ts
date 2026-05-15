@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SongsService } from '../../services/songs';
 import { PlayerService, Song } from '../../services/player';
@@ -8,7 +9,7 @@ import { GENRE_COLORS, getGenreColor } from '../../utils/genre-colors';
 @Component({
   selector: 'app-genres',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './genres.html',
   styleUrls: ['./genres.css']
 })
@@ -19,14 +20,17 @@ export class GenresComponent implements OnInit {
   player = inject(PlayerService);
   router = inject(Router);
 
+  allGenres: string[] = [];
   genres: string[] = [];
   selectedGenre: string | null = null;
   songs: Song[] = [];
   isLoading = false;
+  searchQuery = '';
 
   ngOnInit() {
     this.songsService.getGenres().subscribe(genres => {
-      this.genres = genres.filter(g => g !== 'Unknown').sort();
+      this.allGenres = genres.filter(g => g !== 'Unknown').sort();
+      this.genres = this.allGenres;
       this.cdr.detectChanges();
     });
 
@@ -34,8 +38,17 @@ export class GenresComponent implements OnInit {
       if (params['genre']) {
         this.selectedGenre = params['genre'];
         this.loadSongs(params['genre']);
+      } else {
+        this.selectedGenre = null;
       }
     });
+  }
+
+  filterGenres() {
+    const q = this.searchQuery.toLowerCase().trim();
+    this.genres = q
+      ? this.allGenres.filter(g => g.toLowerCase().includes(q))
+      : this.allGenres;
   }
 
   loadSongs(genre: string) {
