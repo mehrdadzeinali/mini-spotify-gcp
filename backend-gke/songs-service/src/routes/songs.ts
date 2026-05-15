@@ -88,12 +88,19 @@ router.get('/recommendations/:userId', async (req, res) => {
       return res.json(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }
 
-    const snapshot = await firestore.collection('songs')
-      .where('genre', 'in', topGenres)
-      .limit(20)
-      .get();
+    // Fetch songs per genre in preference order
+    const allSongs: any[] = [];
+    for (const genre of topGenres) {
+      const snapshot = await firestore.collection('songs')
+        .where('genre', '==', genre)
+        .limit(10)
+        .get();
+      const songs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Shuffle within each genre for variety
+      allSongs.push(...songs.sort(() => Math.random() - 0.5));
+    }
 
-    res.json(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    res.json(allSongs.slice(0, 20));
   } catch (error) {
     res.status(500).json({ error: String(error) });
   }
