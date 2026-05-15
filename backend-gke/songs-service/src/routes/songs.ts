@@ -58,7 +58,7 @@ router.get('/trending', async (req, res) => {
     const enriched = await Promise.all(rows.map(async (row: any) => {
       const doc = await firestore.collection('songs').doc(row.songId).get();
       const firestoreData = doc.exists ? doc.data() : {};
-      return { ...row, ...firestoreData };
+      return { id: row.songId, ...firestoreData, plays: row.plays };
     }));
 
     res.json(enriched);
