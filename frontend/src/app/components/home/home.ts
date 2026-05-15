@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SongsService } from '../../services/songs';
 import { PlayerService, Song } from '../../services/player';
 import { getGenreColor } from '../../utils/genre-colors';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +17,7 @@ export class HomeComponent implements OnInit {
   private songsService = inject(SongsService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(AuthService);
   player = inject(PlayerService);
 
   trending: Song[] = [];
@@ -40,22 +42,30 @@ export class HomeComponent implements OnInit {
 
   loadAll() {
     this.isLoading = true;
-
+  
+    this.auth.user$.subscribe(user => {
+      if (!user) return;
+    
+      this.songsService.getRecommendations(user.uid).subscribe(recommendations => {
+        this.forYou = recommendations;
+        this.cdr.detectChanges();
+      });
+    });
+  
     this.songsService.getSongs(undefined, undefined, 50, 0).subscribe(songs => {
       const shuffled = [...songs].sort(() => Math.random() - 0.5);
-      this.forYou = shuffled.slice(0, 10);
-      this.random = shuffled.slice(10, 20);
+      this.random = shuffled.slice(0, 10);
       this.recentlyAdded = songs.slice(0, 10);
       this.player.setQueue(songs);
       this.isLoading = false;
       this.cdr.detectChanges();
     });
-
+  
     this.songsService.getTrending().subscribe(trending => {
       this.trending = trending;
       this.cdr.detectChanges();
     });
-
+  
     this.songsService.getGenres().subscribe(genres => {
       this.genres = genres.filter(g => g !== 'Unknown').sort().slice(0, 10);
       this.cdr.detectChanges();

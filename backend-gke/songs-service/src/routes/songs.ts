@@ -68,4 +68,35 @@ router.get('/trending', async (req, res) => {
   }
 });
 
+router.get('/recommendations/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const [rows] = await bigquery.query(`
+      SELECT genre, COUNT(*) as plays
+      FROM \`mini-spotify-gcp.wavely_analytics.play_events\`
+      WHERE userId = '${userId}' AND eventType = 'PLAY'
+      GROUP BY genre
+      ORDER BY plays DESC
+      LIMIT 3
+    `);
+
+    const topGenres = rows.map((r: any) => r.genre);
+
+    if (topGenres.length === 0) {
+      const snapshot = await firestore.collection('songs').limit(10).get();
+      return res.json(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }
+
+    const snapshot = await firestore.collection('songs')
+      .where('genre', 'in', topGenres)
+      .limit(20)
+      .get();
+
+    res.json(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 export default router;
