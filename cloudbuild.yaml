@@ -53,7 +53,7 @@ steps:
     entrypoint: 'bash'
     args:
       - '-c'
-      - 'gcloud secrets versions access latest --secret=angular-environment > frontend/src/environments/environment.ts'
+      - 'mkdir -p frontend/src/environments && gcloud secrets versions access latest --secret=angular-environment > frontend/src/environments/environment.ts'
 
   # Build frontend
   - name: 'node:20'
