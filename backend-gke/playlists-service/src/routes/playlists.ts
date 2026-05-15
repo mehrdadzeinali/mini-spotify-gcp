@@ -71,4 +71,24 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Remove a song from a playlist
+router.delete('/:id/songs/:songId', async (req, res) => {
+  try {
+    const { id, songId } = req.params;
+    const ref = firestore.collection('playlists').doc(id);
+    const doc = await ref.get();
+
+    if (!doc.exists) {
+      res.status(404).json({ error: 'Playlist not found' });
+      return;
+    }
+
+    const songs = doc.data()?.songs || [];
+    await ref.update({ songs: songs.filter((s: string) => s !== songId) });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 export default router;

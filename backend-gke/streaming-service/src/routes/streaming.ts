@@ -68,4 +68,17 @@ router.get('/likes', async (req, res) => {
   }
 });
 
+// Unlike a song
+router.delete('/like/:songId', async (req, res) => {
+  try {
+    const userId = (req as any).user.uid;
+    const { songId } = req.params;
+
+    await firestore.collection('likes').doc(`${userId}_${songId}`).delete();
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: String(error) });
+  }
+});
+
 export default router;
