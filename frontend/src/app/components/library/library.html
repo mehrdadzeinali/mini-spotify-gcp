@@ -36,7 +36,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             Play All
           </button>
-          <p>{{ likedSongs.length }} songs</p>
+          <p>{{ likedSongs.length }} {{ likedSongs.length === 1 ? 'song' : 'songs' }}</p>
         </div>
         <div class="songs-list">
           @for (song of likedSongs; track song.id; let i = $index) {
