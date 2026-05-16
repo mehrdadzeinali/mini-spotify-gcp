@@ -59,6 +59,12 @@ export class LayoutComponent implements OnInit {
         this.isLiked = false;
       }
     });
+
+    this.playlistsService.likedIds$.subscribe(ids => {
+      this.likedIds = ids;
+      const current = this.player.currentSong$.value;
+      if (current) this.isLiked = ids.includes(current.id);
+    });
   }
 
   loadLikes() {
@@ -91,21 +97,21 @@ export class LayoutComponent implements OnInit {
       if (!user) return;
       user.getIdToken().then(token => {
         if (this.isLiked) {
-          // Unlike
           this.http.delete(`${environment.apiUrl}/streaming/like/${song.id}`, {
             headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
           }).subscribe(() => {
             this.likedIds = this.likedIds.filter(id => id !== song.id);
             this.isLiked = false;
+            this.playlistsService.likedIds$.next(this.likedIds);
             this.showToast('Removed from liked songs');
           });
         } else {
-          // Like
           this.http.post(`${environment.apiUrl}/streaming/like`, { songId: song.id }, {
             headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
           }).subscribe(() => {
             this.likedIds.push(song.id);
             this.isLiked = true;
+            this.playlistsService.likedIds$.next(this.likedIds);
             this.showToast('Added to liked songs ❤️');
           });
         }

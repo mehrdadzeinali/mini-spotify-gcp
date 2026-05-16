@@ -36,10 +36,16 @@ export class LibraryComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
-    // Subscribe to shared playlist state
     this.playlistsService.playlists$.subscribe(playlists => {
       this.playlists = playlists;
       this.cdr.detectChanges();
+    });
+
+    this.playlistsService.likedIds$.subscribe(ids => {
+      if (ids.length > 0 || this.likedSongs.length > 0) {
+        this.likedSongs = this.allSongs.filter(s => ids.includes(s.id));
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -75,6 +81,9 @@ export class LibraryComponent implements OnInit {
           headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
         }).subscribe(() => {
           this.likedSongs = this.likedSongs.filter(s => s.id !== song.id);
+          this.playlistsService.likedIds$.next(
+            this.playlistsService.likedIds$.value.filter(id => id !== song.id)
+          );
           this.showToast('Removed from liked songs');
           this.cdr.detectChanges();
         });

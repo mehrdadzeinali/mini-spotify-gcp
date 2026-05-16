@@ -21,6 +21,7 @@ export class PlaylistsService {
 
   // Shared state — both Layout and Library subscribe to this
   playlists$ = new BehaviorSubject<Playlist[]>([]);
+  likedIds$ = new BehaviorSubject<string[]>([]);
 
   private getHeaders() {
     return from(this.auth.currentUser!.getIdToken()).pipe(
