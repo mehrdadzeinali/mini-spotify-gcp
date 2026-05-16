@@ -54,7 +54,6 @@ export class HomeComponent implements OnInit {
     this.auth.user$.subscribe(user => {
       if (!user) return;
       this.songsService.getRecommendations(user.uid).subscribe(recommendations => {
-        // Fix 6 — exclude songs already in trending
         this.forYou = recommendations.filter(s => !usedIds.has(s.id));
         this.forYou.forEach(s => usedIds.add(s.id));
         this.cdr.detectChanges();
@@ -64,7 +63,6 @@ export class HomeComponent implements OnInit {
     this.songsService.getSongs(undefined, undefined, 50, 0).subscribe(songs => {
       const shuffled = [...songs].sort(() => Math.random() - 0.5);
 
-      // Fix 6 — exclude songs already used in trending and forYou
       this.random = shuffled.filter(s => !usedIds.has(s.id)).slice(0, 10);
       this.random.forEach(s => usedIds.add(s.id));
 

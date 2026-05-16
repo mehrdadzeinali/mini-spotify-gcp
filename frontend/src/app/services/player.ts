@@ -65,7 +65,6 @@ export class PlayerService {
     }
   }
 
-  // Fix 5 — Stop music completely and reset state
   stop() {
     this.audio.pause();
     this.audio.src = '';
@@ -80,12 +79,12 @@ export class PlayerService {
     const queue = this.queue$.value;
     const current = this.currentSong$.value;
     if (!queue.length || !current) return;
-  
+
     if (this.isLoop$.value === 'one') {
       this.playSong(current);
       return;
     }
-  
+
     let nextSong: Song;
     if (this.isShuffle$.value) {
       const others = queue.filter(s => s.id !== current.id);
@@ -94,7 +93,7 @@ export class PlayerService {
       const index = queue.findIndex(s => s.id === current.id);
       nextSong = queue[index + 1] || (this.isLoop$.value === 'all' ? queue[0] : current);
     }
-  
+
     this.playSong(nextSong);
   }
 

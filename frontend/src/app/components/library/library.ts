@@ -67,7 +67,6 @@ export class LibraryComponent implements OnInit {
     this.player.playSong(song);
   }
 
-  // Fix 1 — Unlike with immediate UI update
   unlikeSong(song: Song) {
     this.auth.user$.subscribe(user => {
       if (!user) return;
@@ -83,11 +82,9 @@ export class LibraryComponent implements OnInit {
     });
   }
 
-  // Fix 2 — Create playlist with immediate UI update
   createPlaylist() {
     if (!this.newPlaylistName.trim()) return;
-    this.playlistsService.createPlaylist(this.newPlaylistName).subscribe(playlist => {
-      this.playlists = [...this.playlists, playlist];
+    this.playlistsService.createPlaylist(this.newPlaylistName).subscribe(() => {
       this.newPlaylistName = '';
       this.showCreatePlaylist = false;
       this.showToast('Playlist created');
@@ -105,7 +102,6 @@ export class LibraryComponent implements OnInit {
     });
   }
 
-  // Fix 2 — Add to playlist with immediate UI update
   addToPlaylist(playlistId: string, songId: string) {
     this.playlistsService.addSongToPlaylist(playlistId, songId).subscribe(() => {
       const playlist = this.playlists.find(p => p.id === playlistId);
@@ -122,7 +118,6 @@ export class LibraryComponent implements OnInit {
     });
   }
 
-  // Fix 3 — Remove song from playlist
   removeSongFromPlaylist(playlist: Playlist, songId: string) {
     if (!playlist.id) return;
     this.playlistsService.removeSongFromPlaylist(playlist.id, songId).subscribe(() => {
@@ -140,7 +135,6 @@ export class LibraryComponent implements OnInit {
     return this.likedSongs.some(s => s.id === song.id);
   }
 
-  // Fix 8 — Toast notifications
   showToast(message: string) {
     this.toast = message;
     setTimeout(() => {

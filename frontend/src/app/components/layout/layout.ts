@@ -48,13 +48,11 @@ export class LayoutComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Fix 5 — reload likes and playlists when user changes
     this.auth.user$.subscribe(user => {
       if (user) {
         this.loadLikes();
         this.loadPlaylists();
       } else {
-        // Fix 5 — stop music and clear state on logout
         this.player.stop();
         this.likedIds = [];
         this.playlists = [];
@@ -86,7 +84,6 @@ export class LayoutComponent implements OnInit {
     });
   }
 
-  // Fix — toggle like/unlike from player bar
   toggleLike() {
     const song = this.player.currentSong$.value;
     if (!song) return;
@@ -136,7 +133,6 @@ export class LayoutComponent implements OnInit {
   setVolume(event: any) { this.player.setVolume(parseFloat(event.target.value)); }
 
   async logout() {
-    // Fix 5 — stop music before logout
     this.player.stop();
     await this.auth.logout();
     this.router.navigate(['/login']);
