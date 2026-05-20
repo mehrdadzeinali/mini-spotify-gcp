@@ -62,10 +62,10 @@ Wavely is a music streaming application built with free royalty-free music from 
                │   port 3001       │ │  port 3002       │ │  port 3003        │
                │   2–10 pods (HPA) │ │  2–10 pods (HPA) │ │  2–10 pods (HPA)  │
                └────────┬──────────┘ └────────┬─────────┘ └────────┬──────────┘
-                        │                     │                     │
-                        │      ┌──────────────┘                     │
-                        │      │                                     │
-                        ▼      ▼                                     ▼
+                        │                     │                    │
+                        │      ┌──────────────┘                    │
+                        │      │                                   │
+                        ▼      ▼                                   ▼
                ┌────────────────────────┐              ┌────────────────────────┐
                │       FIRESTORE        │              │       PUB/SUB          │
                │  - songs (1000 docs)   │              │  wavely-play-events    │
@@ -79,16 +79,16 @@ Wavely is a music streaming application built with free royalty-free music from 
                │  mini-spotify-audio    │              │       BIGQUERY         │
                │  1000 MP3 files        │              │  wavely_analytics      │
                └────────────────────────┘              │  play_events table     │
-                                                        │  1M+ rows              │
-                                                        └────────────┬───────────┘
-                                                                     │
-                                                                     │ SQL queries
-                                                                     ▼
-                                                        ┌────────────────────────┐
-                                                        │    songs-service       │
-                                                        │  /songs/trending       │
-                                                        │  /songs/recommendations│
-                                                        └────────────────────────┘
+                                                       │  1M+ rows              │
+                                                       └────────────┬───────────┘
+                                                                    │
+                                                                    │ SQL queries
+                                                                    ▼
+                                                       ┌────────────────────────┐
+                                                       │    songs-service       │
+                                                       │  /songs/trending       │
+                                                       │  /songs/recommendations│
+                                                       └────────────────────────┘
 ```
 
 ### Authentication & Security Flow
