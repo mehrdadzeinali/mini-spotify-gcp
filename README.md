@@ -1,10 +1,9 @@
 # 🎵 Wavely — A Music Streaming App on Google Cloud
 
-Wavely is a music streaming application built with free royalty-free music from [Jamendo]Wavely is a royalty-free music streaming app built on Google Cloud Platform. I built it hands-on to understand the technical context of a **Cloud Customer Engineer** role — using as many GCP services as possible, each with a real justification. If you have any question about the architecture and the reason behiend my decisions, i invite you to checkout the presentation:
+Wavely is a royalty-free music streaming app built on Google Cloud Platform. I built it hands-on to understand the technical context of a **Cloud Customer Engineer** role — using as many GCP services as possible, each with a real justification. If you have any questions about the architecture and the reasoning behind my decisions, check out the presentation:
 
-**Architecture & decisions:** [playwavely.web.app/presentation.html](https://playwavely.web.app/presentation.html)
-
-**Live app:** [playwavely.web.app](https://playwavely.web.app)  
+**Architecture & decisions:** [playwavely.web.app/presentation.html](https://playwavely.web.app/presentation.html)  
+**Live app:** [playwavely.web.app](https://playwavely.web.app)
 
 ---
 
@@ -24,6 +23,50 @@ Wavely is a music streaming application built with free royalty-free music from 
 
 ---
 
+## 🎵 Music source
+
+All tracks come from [Jamendo](https://www.jamendo.com) — a platform that distributes music under Creative Commons licenses, meaning artists allow free use of their music for non-commercial purposes.
+
+I wrote a script to fetch 1000 tracks from the Jamendo API, download the MP3 files, upload them to Cloud Storage, and populate the Firestore songs collection with metadata (title, artist, genre, duration, cover art).
+
+---
+
+## 📊 Seeded data
+
+The Trending and For You features require real play history to be meaningful. Since the app had no real users, I wrote a script to seed BigQuery with realistic data:
+
+- **51 test users** — each assigned a set of favourite genres
+- **1M+ play events** — generated with weighted randomness so each user's history reflects their genre preferences
+- This makes the For You recommendations actually personalised and the Trending section non-trivial
+
+---
+
+## 🔄 Continuous Deployment
+
+Every push to `main` triggers a Cloud Build pipeline that:
+
+1. Builds 3 Docker images and pushes them to Artifact Registry
+2. Restarts the GKE deployments (`kubectl rollout restart`)
+3. Fetches `environment.ts` from Secret Manager and injects it into the Angular build
+4. Runs `ng build` and deploys to Firebase Hosting via `firebase deploy`
+
+The entire backend + frontend deploys in ~10 minutes with no manual steps.
+
+### Rebuilding backend services manually
+
+If you need to rebuild and redeploy a specific service without triggering the full pipeline:
+
+```bash
+# Build and push a specific service
+docker build -t europe-west1-docker.pkg.dev/PROJECT_ID/wavely/songs-service ./backend-gke/songs-service
+docker push europe-west1-docker.pkg.dev/PROJECT_ID/wavely/songs-service
+
+# Restart the deployment on GKE
+kubectl rollout restart deployment/songs-service -n default
+```
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -32,7 +75,7 @@ Wavely is a music streaming application built with free royalty-free music from 
 - **RxJS BehaviorSubjects** — Shared state across components (player state, playlists, liked songs)
 - **MediaSession API** — Hardware media key and lock screen integration
 
-### Backend (3 Microservices on GKE)
+### Backend (3 microservices on GKE)
 - **Node.js + Express + TypeScript**
 - **Firebase Admin SDK** — Server-side JWT verification and Firestore access
 - **@google-cloud/bigquery** — Analytics queries from songs-service
@@ -95,9 +138,10 @@ mini-spotify-gcp/
 
 ---
 
-## 🔭 What I would do next
+## 🔭 What's next
 
-- **Vertex AI Recommendations AI** — Train a real collaborative filtering model on the BigQuery play events. The data pipeline is already designed for this. The current "For You" section uses a BigQuery genre-affinity query, which is not ML
-- **Memorystore (Redis)** — Cache trending songs to reduce BigQuery query latency on every page load
-- **Private GKE cluster** — Move nodes to a VPC without public IPs, expose only the Gateway
-- **Automated tests** — Add unit and integration tests to the CD pipeline to make it a proper CI/CD setup
+- **Vertex AI Recommendations AI** — Train a real collaborative filtering model on the BigQuery play events. The data pipeline is already designed for this. The current "For You" section uses a BigQuery genre-affinity query, not ML.
+- **Memorystore (Redis)** — Cache trending songs to reduce BigQuery query latency on every page load.
+- **Automated tests + CI** — Add unit and integration tests to make Cloud Build a proper CI/CD pipeline, not just CD.
+
+---

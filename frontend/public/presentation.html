@@ -434,7 +434,7 @@ section{padding:100px 0 80px;position:relative;}
         <div class="an" id="n-gw" data-step="3" onclick="setStep(3)"
           style="border-color:#1a73e8;background:#1a73e8;color:#fff;">
           <div class="an-ico" style="background:rgba(255,255,255,.18)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-          <div class="an-info"><div class="an-name">GKE Gateway — L7 Load Balancer</div><div class="an-sub" style="opacity:.75">HTTPS · SSL · path-based routing</div></div>
+          <div class="an-info"><div class="an-name">GKE Gateway — Load Balancer</div><div class="an-sub" style="opacity:.75">HTTPS · SSL · path-based routing</div></div>
         </div>
 
         <!-- ROW 4: 3 microservices (evenly spaced inside GKE region) -->
@@ -571,7 +571,7 @@ section{padding:100px 0 80px;position:relative;}
       <div class="dec-hd"><div class="dec-ico" style="background:#fce8e6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><div class="dec-title">Firebase Hosting + Cloud CDN</div><div class="dec-sub">Global frontend delivery</div></div></div>
       <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">When you type playwavely.web.app, the app loads from the server closest to you — not from a single machine in France. Paris, Tokyo, New York — same fast experience.</div></div>
       <span class="t-tag">Technical</span>
-      <p class="t-story">Angular SPA on Firebase Hosting, automatically backed by Cloud CDN. Chosen because <strong>Cloud Build deploys directly via a Firebase CLI token stored in Secret Manager</strong> — seamless CD pipeline. Zero server management, automatic SSL, global edge caching.</p>
+      <p class="t-story">Firebase Hosting was chosen for its zero server management, automatic SSL (which encrypts the connection between the user and the app), and built-in global CDN. Deployment is fully automated via Cloud Build using a Firebase CLI token stored in Secret Manager.</p>
     </div>
 
     <div class="dec fi">
@@ -579,7 +579,7 @@ section{padding:100px 0 80px;position:relative;}
       <div class="dec-hd"><div class="dec-ico" style="background:#f3e5f5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div><div><div class="dec-title">Cloud Storage</div><div class="dec-sub">1000 MP3 files · SPA reads directly · no backend proxy</div></div></div>
       <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">The music files are stored in Google's cloud. When you press play, your browser fetches the audio directly — no middleman app in between. Faster, simpler, cheaper.</div></div>
       <span class="t-tag">Technical</span>
-      <p class="t-story">The SPA streams MP3s directly from Cloud Storage URLs — <strong>bypassing all 3 microservices entirely.</strong> Audio through the API would add latency, waste pod resources, and introduce a failure point. Direct object storage is the right architecture for media delivery. Files sourced from Jamendo by script (Creative Commons).</p>
+      <p class="t-story">The SPA streams MP3s directly from Cloud Storage URLs — bypassing all 3 microservices entirely. Audio through the API would add latency, waste pod resources, and introduce a failure point. Direct object storage is the right architecture for media delivery. Access is controlled via Firebase Security Rules — only authenticated users (verified JWT) can fetch audio files.</p>
     </div>
 
     <div class="dec fi">
@@ -601,9 +601,9 @@ section{padding:100px 0 80px;position:relative;}
     <div class="dec fi">
       <div class="dec-stripe" style="background:#1e8e3e"></div>
       <div class="dec-hd"><div class="dec-ico" style="background:#e6f4ea"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div><div class="dec-title">Cloud Build</div><div class="dec-sub">Continuous deployment · git push → live in ~10 min</div></div></div>
-      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">Every time I push code to GitHub, the app updates itself automatically in ~10 minutes. No manual work needed.</div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">Every time I push code to GitHub, the app updates itself automatically in ~4 minutes. No manual work needed.</div></div>
       <span class="t-tag">Technical</span>
-      <p class="t-story">Trigger fires on every push to main: builds 3 Docker images → Artifact Registry → kubectl rollout restart → fetches environment.ts from Secret Manager → ng build → firebase deploy. <strong>Backend + frontend in one cloudbuild.yaml.</strong> CD, not CI — no automated tests yet.</p>
+      <p class="t-story">Trigger fires on every push to main: builds 3 Docker images → Artifact Registry → kubectl rollout restart → fetches environment.ts from Secret Manager → ng build → firebase deploy. <strong>Backend + frontend in one cloudbuild.yaml.</strong>/p>
     </div>
 
     <div class="dec fi">
@@ -611,15 +611,15 @@ section{padding:100px 0 80px;position:relative;}
       <div class="dec-hd"><div class="dec-ico" style="background:#fce8e6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><div><div class="dec-title">Artifact Registry</div><div class="dec-sub">Docker image storage · same region as GKE</div></div></div>
       <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">When Cloud Build packages the 3 apps, it creates containers — like boxes with everything needed to run. Artifact Registry is the warehouse where those boxes live before deployment.</div></div>
       <span class="t-tag">Technical</span>
-      <p class="t-story">Images stored in europe-west1 — <strong>same region as the GKE cluster</strong> to avoid cross-region egress costs and reduce pull latency. Replaces Container Registry with finer IAM control per repository.</p>
+      <p class="t-story">Images stored in europe-west1 — <strong>same region as the GKE cluster</strong> to avoid cross-region egress costs and reduce pull latency.</p>
     </div>
 
     <div class="dec fi">
       <div class="dec-stripe" style="background:#1a73e8"></div>
-      <div class="dec-hd"><div class="dec-ico" style="background:#e8f0fe"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div><div class="dec-title">GKE Gateway — L7 Load Balancer</div><div class="dec-sub">Single entry point · path routing · Cloud Armor attachment</div></div></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#e8f0fe"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div><div class="dec-title">GKE Gateway — Load Balancer</div><div class="dec-sub">Single entry point · path routing · Cloud Armor attachment</div></div></div>
       <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">3 backend apps, one address. The Gateway reads the URL and sends each request to the right app — like a receptionist directing visitors in a building.</div></div>
       <span class="t-tag">Technical</span>
-      <p class="t-story"><strong>gke-l7-global-external-managed</strong> with HTTPRoute. Chosen over Ingress for the modern GKE-native approach and <strong>Cloud Armor attachment directly to backend services.</strong> SSL via Certificate Manager. /songs/* · /playlists/* · /streaming/*.</p>
+      <p class="t-story">Uses GKE Gateway as a single entry point — it load balances incoming traffic across service instances and routes each request to the right microservice based on the URL path (/songs, /playlists, /streaming), with Cloud Armor integration for security.</p>
     </div>
 
   </div>
@@ -647,7 +647,6 @@ section{padding:100px 0 80px;position:relative;}
   <div class="ctr">
     <div class="ttitle fi">Thank you</div>
     <div class="tname fi">Mehrdad Zeinali</div>
-    <div class="trole fi">Software Engineering Apprentice · BNP Paribas CIB · Paris</div>
     <div class="tlinks fi">
       <a href="https://playwavely.web.app" target="_blank" class="tlink"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>playwavely.web.app</a>
       <a href="https://github.com/mehrdadzeinali/mini-spotify-gcp" target="_blank" class="tlink"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
@@ -765,30 +764,30 @@ const STEPS = [
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
    title:'You type playwavely.web.app',
    nt:'You type a website address into your browser. Behind the scenes, that address gets converted into a numeric IP so your browser knows which server to connect to. Google then serves the app from the closest server to you — whether you\'re in Paris or Tokyo. Fast, anywhere in the world.',
-   t:'DNS translates the domain name to an IP address, then Cloud CDN serves the app from the nearest Google data center to the user.',
+   t:'When a user visits the app, DNS translates the domain to an IP address and routes the request to Firebase Hosting. Cloud CDN then serves the app\'s files from the nearest server to the user, so the app loads quickly regardless of location.',
    hi:['n-spa']},
   {id:'n-auth',ibg:'#fef7e0',
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
    title:'You log in — you get your pass',
    nt:'You enter your credentials. Firebase Auth verifies your identity and gives you a JWT token — a digital pass. Your browser attaches it to every action from now on. Without it, the backend refuses.',
-   t:'Firebase Auth verifies the identity and issues a JWT token — a signed digital pass that every backend service checks on each request.',
+   t:'Firebase Auth issues a signed JWT on login. Every API request carries it as Authorization: Bearer. All 3 microservices verify it server-side via Firebase Admin SDK before processing anything.',
    hi:['n-spa','n-auth']},
   {id:'n-armor',ibg:'#fce8e6',
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
    title:'The bouncer checks you',
-   nt:'Before reaching any backend, Cloud Armor checks your behaviour — not your identity. Sending too many requests too fast? Blocked with HTTP 429. Normal users never see this.',
-   t:'Cloud Armor sits in front of the infrastructure and rate-limits traffic at the network level — any IP exceeding 1000 requests per 10 seconds is automatically blocked.',
+   nt:'Before reaching any backend, Cloud Armor checks your behaviour — not your identity. Sending too many requests too fast? Blocked. Normal users never see this.',
+   t:'Cloud Armor in front of the GKE Gateway. Rate limit: 1000 req/10s/IP → HTTP 429. Attached to all 3 backend services.',
    hi:['n-spa','n-armor']},
   {id:'n-gw',ibg:'#e8f0fe',
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
    title:'The Gateway routes your request',
    nt:'3 backend apps, one address. The Gateway reads the URL and sends each request to the right app — like a receptionist. /songs → songs app. /playlists → playlist app. /streaming → streaming app.',
-   t:'The L7 load balancer reads the URL path and routes each request to the right microservice. SSL is terminated here — all traffic inside the cluster is internal.',
+   t:'The load balancer reads the URL path and routes each request to the right microservice. SSL is terminated here — all traffic inside the cluster is internal.',
    hi:['n-armor','n-gw']},
   {id:'n-songs',ibg:'#f3e5f5',
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
    title:'songs-service handles your search',
-   nt:'Browse songs, search by title or artist, see what\'s Trending, and get your For You recommendations. This is the most data-heavy service — it\'s the only one that reads BigQuery.',
+   nt:'Browse songs, search by title or artist, see what\'s Trending, and get your For You recommendations.',
    t:'The only service that queries BigQuery — to compute trending songs and personalised recommendations based on each user\'s listening history.',
    hi:['n-gw','n-songs']},
   {id:'n-pl',ibg:'#f3e5f5',
@@ -818,13 +817,13 @@ const STEPS = [
   {id:'n-ps',ibg:'#e6f4ea',
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>',
    title:'Pub/Sub — the background messenger',
-   nt:'streaming-service drops your play event here like a letter in a mailbox, then moves on immediately. Pub/Sub holds it and delivers it to BigQuery in the background.',
+   nt:'When you press play, the streaming service registers that action and immediately moves on — it doesn\'t wait around. Behind the scenes, a messaging system picks up that event and stores it for analysis.',
    t:'Pub/Sub decouples the event producer from the consumer — streaming-service drops the message and moves on. A native BigQuery subscription ingests it automatically, with no extra code.',
    hi:['n-st','n-ps']},
   {id:'n-bq',ibg:'#e6f4ea',
    icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>',
    title:'BigQuery — the analytics brain',
-   nt:'BigQuery knows every song ever played by everyone. It finds the 20 most popular right now (Trending) and which genres you love most (For You). It analyses 1 million+ events instantly.',
+   nt:'BigQuery knows every song ever played by everyone. It finds the 20 most popular right now (Trending) and which genres you love most (For You).',
    t:'Analytical data warehouse storing 1M+ play events. songs-service queries it to find the most played songs globally and each user\'s top genres for personalised recommendations.',
    hi:['n-ps','n-bq','n-songs']},
 ];
