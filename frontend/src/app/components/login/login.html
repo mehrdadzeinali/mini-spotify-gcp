@@ -11,9 +11,41 @@
     <div class="form">
       <input [(ngModel)]="email" type="email" placeholder="Email address" />
       <input [(ngModel)]="password" type="password" placeholder="Password" />
+
+      <!-- Password guide: shown only when creating an account -->
+      <div class="password-guide" *ngIf="isRegistering && password.length > 0">
+        <p class="guide-title">Password requirements</p>
+        <div class="check-row" [class.pass]="passwordChecks.length">
+          <span class="check-icon">{{ passwordChecks.length ? '✓' : '✗' }}</span>
+          At least 8 characters
+        </div>
+        <div class="check-row" [class.pass]="passwordChecks.uppercase">
+          <span class="check-icon">{{ passwordChecks.uppercase ? '✓' : '✗' }}</span>
+          One uppercase letter
+        </div>
+        <div class="check-row" [class.pass]="passwordChecks.lowercase">
+          <span class="check-icon">{{ passwordChecks.lowercase ? '✓' : '✗' }}</span>
+          One lowercase letter
+        </div>
+        <div class="check-row" [class.pass]="passwordChecks.special">
+          <span class="check-icon">{{ passwordChecks.special ? '✓' : '✗' }}</span>
+          One special character (!&#64;#$…)
+        </div>
+      </div>
+
       <p class="error" *ngIf="error">{{ error }}</p>
-      <button class="btn-primary" (click)="loginWithEmail()">Sign in</button>
-      <button class="btn-secondary" (click)="register()">Create account</button>
+
+      <button class="btn-primary" (click)="loginWithEmail()" *ngIf="!isRegistering">Sign in</button>
+
+      <button class="btn-primary" (click)="register()"
+              [disabled]="!passwordValid"
+              *ngIf="isRegistering">
+        Create account
+      </button>
+
+      <button class="btn-secondary" (click)="isRegistering = !isRegistering; error = ''">
+        {{ isRegistering ? '← Back to sign in' : 'Create account' }}
+      </button>
     </div>
 
     <div class="divider"><span>or</span></div>

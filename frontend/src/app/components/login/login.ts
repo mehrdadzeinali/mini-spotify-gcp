@@ -18,6 +18,20 @@ export class LoginComponent {
   email = '';
   password = '';
   error = '';
+  isRegistering = false;
+
+  get passwordChecks() {
+    return {
+      length:    this.password.length >= 8,
+      uppercase: /[A-Z]/.test(this.password),
+      lowercase: /[a-z]/.test(this.password),
+      special:   /[^A-Za-z0-9]/.test(this.password),
+    };
+  }
+
+  get passwordValid(): boolean {
+    return Object.values(this.passwordChecks).every(Boolean);
+  }
 
   async loginWithEmail() {
     try {
@@ -38,6 +52,10 @@ export class LoginComponent {
   }
 
   async register() {
+    if (!this.passwordValid) {
+      this.error = 'Please meet all password requirements.';
+      return;
+    }
     try {
       await this.auth.register(this.email, this.password);
       this.router.navigate(['/home']);
