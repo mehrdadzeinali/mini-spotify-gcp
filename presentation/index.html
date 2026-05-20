@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wavely — Mehrdad Zeinali</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='12' fill='%234f6ef7'/><path d='M10 8.5v7l5.5-3.5L10 8.5z' fill='white'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1a73e8;--blue-d:#1557b0;--blue-l:#e8f0fe;
+  --green:#1e8e3e;--green-l:#e6f4ea;
+  --red:#d93025;--red-l:#fce8e6;
+  --yellow:#f9ab00;--yellow-l:#fef7e0;
+  --purple:#7b1fa2;--purple-l:#f3e5f5;
+  --teal:#00897b;--teal-l:#e0f2f1;
+  --gray-50:#f8f9fa;--gray-100:#f1f3f4;--gray-200:#e8eaed;
+  --gray-400:#9aa0a6;--gray-600:#5f6368;
+  --text:#202124;--text-s:#5f6368;--border:#dadce0;
+  --sh-sm:0 1px 3px rgba(60,64,67,.2),0 2px 6px rgba(60,64,67,.1);
+  --sh:0 1px 3px rgba(60,64,67,.3),0 4px 8px rgba(60,64,67,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Google Sans',sans-serif;background:#fff;color:var(--text);line-height:1.6;font-size:16px;}
+
+.topbar{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 36px;gap:16px;z-index:1000;}
+.tlogo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;}
+.tlogo-icon{width:32px;height:32px;border-radius:50%;background:#4f6ef7;display:flex;align-items:center;justify-content:center;}
+.tlogo-name{font-size:18px;font-weight:700;color:var(--text);}
+.tdiv{width:1px;height:22px;background:var(--border);}
+.tsub{font-size:15px;color:var(--gray-400);}
+.tr{margin-left:auto;display:flex;gap:10px;align-items:center;}
+.bo{padding:7px 18px;border:1.5px solid var(--border);border-radius:22px;font-size:14px;font-weight:500;color:var(--text-s);text-decoration:none;transition:all .2s;font-family:'Google Sans',sans-serif;}
+.bo:hover{border-color:var(--blue);color:var(--blue);}
+.bp{padding:7px 22px;border:none;border-radius:22px;font-size:14px;font-weight:500;color:#fff;background:var(--blue);text-decoration:none;font-family:'Google Sans',sans-serif;transition:background .2s;}
+.bp:hover{background:var(--blue-d);}
+
+.prog{position:fixed;top:58px;left:0;height:3px;background:var(--blue);width:0%;transition:width .1s;z-index:999;}
+
+.snav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:900;}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--gray-200);cursor:pointer;transition:all .3s;border:none;padding:0;}
+.sdot.active{background:var(--blue);transform:scale(1.4);}
+.sdot:hover{background:var(--blue);}
+
+section{padding:100px 0 80px;position:relative;}
+.ctr{max-width:960px;margin:0 auto;padding:0 52px;width:100%;}
+.ctr-full{max-width:1300px;margin:0 auto;padding:0 52px;width:100%;}
+
+.lbl{font-family:'Roboto Mono',monospace;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.lbl::before{content:'';width:22px;height:2px;background:var(--blue);border-radius:1px;}
+.stitle{font-family:'Google Sans Display',sans-serif;font-size:48px;font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:22px;}
+.sbody{font-size:17px;color:var(--text-s);line-height:1.8;margin-bottom:18px;}
+.sbody strong{color:var(--text);font-weight:600;}
+
+.fi{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease;}
+.fi.v{opacity:1;transform:translateY(0);}
+
+/* ═══ HERO ═══ */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(155deg,#f8f9fa 0%,#e8f0fe 55%,#e6f4ea 100%);padding-top:58px;}
+.hero-top{display:grid;grid-template-columns:1.2fr .8fr;gap:64px;align-items:center;margin-bottom:56px;}
+.hlogo{width:72px;height:72px;border-radius:50%;background:#4f6ef7;display:flex;align-items:center;justify-content:center;margin-bottom:26px;box-shadow:0 8px 24px rgba(79,110,247,.3);}
+.htitle{font-family:'Google Sans Display',sans-serif;font-size:72px;font-weight:700;letter-spacing:-3px;line-height:1;margin-bottom:16px;}
+.hsub{font-size:17px;color:var(--text-s);line-height:1.85;margin-bottom:28px;}
+.hsub strong{color:var(--text);font-weight:600;}
+.hact{display:flex;gap:14px;}
+.bhp{display:inline-flex;align-items:center;gap:9px;padding:13px 28px;border-radius:28px;font-size:15px;font-weight:600;text-decoration:none;font-family:'Google Sans',sans-serif;background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(26,115,232,.3);transition:all .2s;}
+.bhp:hover{background:var(--blue-d);transform:translateY(-1px);}
+.bhs{display:inline-flex;align-items:center;gap:9px;padding:13px 28px;border-radius:28px;font-size:15px;font-weight:600;text-decoration:none;font-family:'Google Sans',sans-serif;background:#fff;color:var(--text);border:1.5px solid var(--border);transition:all .2s;}
+.bhs:hover{border-color:var(--blue);color:var(--blue);}
+.hright{display:flex;flex-direction:column;gap:14px;}
+.scard{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 22px;display:flex;align-items:center;gap:16px;box-shadow:var(--sh-sm);transition:box-shadow .2s,transform .2s;}
+.scard:hover{box-shadow:var(--sh);transform:translateY(-2px);}
+.sci{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.snum{font-size:24px;font-weight:700;letter-spacing:-.5px;}
+.slbl{font-size:12px;color:var(--text-s);margin-top:2px;}
+
+.sgrid-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;padding-top:36px;border-top:1px solid var(--border);}
+.svc-m{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:box-shadow .2s,transform .2s;}
+.svc-m:hover{box-shadow:var(--sh);transform:translateY(-3px);}
+.svc-mi{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.svc-mn{font-size:11px;font-weight:600;color:var(--text);line-height:1.3;}
+
+/* ═══ FEATURES ═══ */
+#features{background:#fff;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px;}
+.feat-card{background:var(--gray-50);border:1px solid var(--border);border-radius:18px;padding:26px;transition:box-shadow .2s,transform .2s;}
+.feat-card:hover{box-shadow:var(--sh);transform:translateY(-2px);}
+.feat-ico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.feat-title{font-size:16px;font-weight:700;margin-bottom:10px;}
+.feat-desc{font-size:14px;color:var(--text-s);line-height:1.75;}
+
+/* ═══ GUIDE ═══ */
+#guide{background:var(--gray-50);}
+.guide-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px;}
+.guide-card{border-radius:22px;padding:36px;background:#fff;}
+.gc-nt{border:2px solid #f9ab00;}
+.gc-t{border:1.5px solid var(--border);}
+.guide-hd{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.guide-badge{font-size:28px;}
+.guide-tag{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Roboto Mono',monospace;}
+.gt-nt{color:#e37400;}
+.gt-t{color:var(--blue);}
+.guide-title{font-size:20px;font-weight:700;}
+.guide-desc{font-size:15px;color:var(--text-s);line-height:1.8;}
+.guide-ex{border-radius:12px;padding:16px 18px;font-size:14px;line-height:1.7;font-style:italic;margin-top:18px;}
+.ge-nt{background:var(--yellow-l);border-left:3px solid #f9ab00;color:#7a4f00;}
+.ge-t{background:var(--blue-l);border-left:3px solid var(--blue);color:#0d47a1;}
+
+/* ═══ ARCHITECTURE ═══ */
+#architecture{background:#fff;}
+
+.arch-outer{display:flex;gap:36px;margin-top:40px;align-items:flex-start;}
+
+/* Diagram takes all remaining space */
+.arch-diagram{
+  flex:1;
+  min-width:0;
+  position:relative;
+  height:900px;
+}
+#arch-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
+
+/* Nodes use absolute px positions set by JS after layout */
+.an{
+  position:absolute;
+  border-radius:13px;border:1.5px solid;
+  display:flex;align-items:center;padding:10px 16px;gap:10px;
+  font-size:13px;font-weight:600;
+  box-shadow:var(--sh-sm);cursor:pointer;
+  transition:box-shadow .25s,transform .25s,opacity .35s,filter .35s;
+  white-space:nowrap;
+}
+.an:hover{box-shadow:var(--sh);transform:translateY(-2px) scale(1.02);}
+.an.dimmed{opacity:.1;filter:grayscale(60%);}
+.an.highlighted{box-shadow:0 0 0 3px rgba(26,115,232,.22),var(--sh);transform:translateY(-2px);}
+.an-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.an-info{display:flex;flex-direction:column;}
+.an-name{font-size:12px;font-weight:700;}
+.an-sub{font-size:10px;font-weight:400;opacity:.65;margin-top:1px;}
+
+.an-region{position:absolute;border-radius:16px;border:1.5px dashed rgba(30,142,62,.3);background:rgba(30,142,62,.025);pointer-events:none;}
+
+/* Story panel — fixed 420px */
+.arch-story{width:420px;flex-shrink:0;position:sticky;top:80px;}
+.step-ctr{font-family:'Roboto Mono',monospace;font-size:12px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.step-card{background:var(--gray-50);border:1px solid var(--border);border-radius:18px;padding:28px;}
+.step-ico-w{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.step-title{font-size:20px;font-weight:700;margin-bottom:18px;line-height:1.3;}
+.step-nt{background:#fff;border:2px solid #f9ab00;border-radius:14px;padding:16px 18px;margin-bottom:16px;}
+.step-nt-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.step-nt-badge{font-size:16px;}
+.step-nt-tag{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Roboto Mono',monospace;color:#e37400;}
+.step-nt-text{font-size:14px;color:var(--text-s);line-height:1.75;}
+.step-t-tag{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Roboto Mono',monospace;color:var(--blue);margin-bottom:8px;display:block;}
+.step-t{font-size:13px;color:var(--text-s);line-height:1.75;}
+.step-t strong{color:var(--text);font-weight:600;}
+.step-nav{display:flex;align-items:center;gap:10px;margin-top:20px;}
+.step-btn{display:flex;align-items:center;gap:6px;padding:9px 20px;border-radius:22px;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Google Sans',sans-serif;border:none;}
+.step-btn-p{background:var(--blue);color:#fff;}
+.step-btn-p:hover{background:var(--blue-d);}
+.step-btn-s{background:var(--gray-100);color:var(--text-s);}
+.step-btn-s:hover{background:var(--gray-200);}
+.step-btn:disabled{opacity:.3;cursor:default;}
+.step-dots{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap;max-width:130px;}
+.step-dot{width:6px;height:6px;border-radius:50%;background:var(--gray-200);cursor:pointer;transition:all .2s;border:none;padding:0;}
+.step-dot.active{background:var(--blue);width:16px;border-radius:3px;}
+.lgnd{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;}
+.li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--gray-600);}
+
+/* ═══ DECISIONS ═══ */
+#decisions{background:var(--gray-50);}
+.dec{background:#fff;border:1px solid var(--border);border-radius:20px;padding:30px 30px 30px 34px;margin-bottom:22px;position:relative;overflow:hidden;transition:box-shadow .2s;}
+.dec:hover{box-shadow:var(--sh);}
+.dec-stripe{position:absolute;top:0;left:0;width:4px;height:100%;border-radius:2px 0 0 2px;}
+.dec-hd{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px;}
+.dec-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dec-title{font-size:19px;font-weight:700;margin-bottom:4px;}
+.dec-sub{font-size:13px;color:var(--text-s);}
+.nt-box{background:#fffbf0;border:2px solid #f9ab00;border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+.nt-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.nt-badge{font-size:18px;}
+.nt-tag{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Roboto Mono',monospace;color:#e37400;}
+.nt-text{font-size:15px;color:var(--text-s);line-height:1.8;}
+.t-tag{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Roboto Mono',monospace;color:var(--blue);margin-bottom:10px;display:block;}
+.t-story{font-size:15px;color:var(--text-s);line-height:1.8;margin-bottom:16px;}
+.t-story strong{color:var(--text);font-weight:600;}
+.facts{display:flex;flex-direction:column;gap:8px;}
+.fact{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-s);line-height:1.6;}
+.fdot{width:7px;height:7px;border-radius:50%;margin-top:7px;flex-shrink:0;}
+
+/* ═══ LIVE ═══ */
+#live{background:linear-gradient(135deg,#e8f0fe 0%,#e6f4ea 100%);text-align:center;padding:120px 0;}
+#live .ctr{display:flex;flex-direction:column;align-items:center;}
+.lbtn{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;border-radius:32px;padding:18px 40px;font-size:18px;font-weight:600;text-decoration:none;box-shadow:0 4px 18px rgba(26,115,232,.38);transition:all .2s;margin:30px 0 14px;font-family:'Google Sans',sans-serif;}
+.lbtn:hover{background:var(--blue-d);box-shadow:0 8px 26px rgba(26,115,232,.48);transform:translateY(-2px);}
+.lurl{font-family:'Roboto Mono',monospace;font-size:14px;color:var(--gray-400);margin-bottom:52px;}
+.srow{display:flex;gap:60px;justify-content:center;}
+.si .num{font-size:44px;font-weight:700;letter-spacing:-1.5px;}
+.si .lbl2{font-size:13px;color:var(--text-s);margin-top:5px;}
+
+/* ═══ THANKS ═══ */
+#thanks{background:#fff;text-align:center;padding:120px 0;}
+#thanks .ctr{display:flex;flex-direction:column;align-items:center;}
+.ttitle{font-family:'Google Sans Display',sans-serif;font-size:80px;font-weight:700;letter-spacing:-3px;background:linear-gradient(90deg,#4285f4,#ea4335,#fbbc05,#34a853,#4285f4);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite;margin-bottom:18px;}
+@keyframes shimmer{to{background-position:200% center;}}
+.tname{font-size:22px;font-weight:600;margin-bottom:6px;}
+.trole{font-size:15px;color:var(--text-s);margin-bottom:38px;}
+.tlinks{display:flex;gap:16px;}
+.tlink{display:flex;align-items:center;gap:9px;padding:12px 26px;border:1.5px solid var(--border);border-radius:28px;text-decoration:none;color:var(--text-s);font-size:14px;font-weight:500;transition:all .2s;font-family:'Google Sans',sans-serif;}
+.tlink:hover{border-color:var(--blue);color:var(--blue);}
+
+/* ═══════════════════════════════════
+   MOBILE RESPONSIVE
+═══════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* TOPBAR */
+  .topbar { padding: 0 16px; gap: 10px; }
+  .tsub { display: none; }
+  .bo { display: none; }
+  .bp { padding: 6px 14px; font-size: 13px; }
+
+  /* SECTIONS */
+  section { padding: 72px 0 56px; }
+  .ctr { padding: 0 20px; }
+  .ctr-full { padding: 0 20px; }
+  .stitle { font-size: 32px; letter-spacing: -1px; }
+  .sbody { font-size: 15px; }
+
+  /* SIDE NAV */
+  .snav { display: none; }
+
+  /* HERO */
+  .hero-top { grid-template-columns: 1fr; gap: 32px; }
+  .htitle { font-size: 52px; letter-spacing: -2px; }
+  .hsub { font-size: 15px; }
+  .hlogo { width: 56px; height: 56px; margin-bottom: 18px; }
+  .hact { flex-direction: column; gap: 10px; }
+  .bhp, .bhs { justify-content: center; padding: 12px 20px; font-size: 14px; }
+  .sgrid-mini { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .svc-mn { font-size: 10px; }
+
+  /* FEATURES */
+  .feat-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  /* GUIDE */
+  .guide-wrap { grid-template-columns: 1fr; gap: 16px; }
+  .guide-card { padding: 24px; }
+
+  /* ARCHITECTURE */
+  .arch-outer { display: block; }
+  .arch-diagram { display: none !important; }
+  .arch-story { width: 100% !important; position: static !important; top: auto !important; }
+  .lgnd { display: none; }
+  .step-card { padding: 20px; }
+  .step-title { font-size: 17px; }
+  .step-nt-text { font-size: 13px; }
+  .step-t { font-size: 12px; }
+  .lgnd { gap: 10px; }
+
+  /* DECISIONS */
+  .dec { padding: 22px 22px 22px 26px; }
+  .dec-title { font-size: 16px; }
+  .nt-text { font-size: 14px; }
+  .t-story { font-size: 14px; }
+  .fact { font-size: 13px; }
+
+  /* LIVE */
+  .srow { gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .si .num { font-size: 34px; }
+  .lbtn { font-size: 15px; padding: 14px 28px; }
+
+  /* STATS CARDS */
+  .hright { gap: 10px; }
+  .scard { padding: 14px 16px; }
+  .snum { font-size: 20px; }
+
+  /* THANKS */
+  .ttitle { font-size: 52px; }
+  .tlinks { flex-direction: column; align-items: center; gap: 10px; }
+}
+
+@media (max-width: 480px) {
+  .htitle { font-size: 42px; }
+  .stitle { font-size: 28px; }
+  .sgrid-mini { grid-template-columns: repeat(3, 1fr); }
+  .arch-diagram { height: 460px; }
+  .ttitle { font-size: 42px; }
+  .srow { gap: 20px; }
+  .si .num { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tlogo" onclick="go('hero')">
+    <div class="tlogo-icon"><svg width="17" height="17" viewBox="0 0 24 24"><path d="M10 8.5v7l5.5-3.5L10 8.5z" fill="white"/></svg></div>
+    <div class="tlogo-name">Wavely</div>
+  </div>
+  <div class="tdiv"></div>
+  <div class="tsub">Built on Google Cloud Platform</div>
+  <div class="tr">
+    <a href="https://playwavely.web.app" target="_blank" class="bo">Live app ↗</a>
+    <a href="https://github.com/mehrdadzeinali/mini-spotify-gcp" target="_blank" class="bp">GitHub</a>
+  </div>
+</div>
+<div class="prog" id="progress"></div>
+
+<div class="snav">
+  <button class="sdot active" onclick="go('hero')"></button>
+  <button class="sdot" onclick="go('features')"></button>
+  <button class="sdot" onclick="go('guide')"></button>
+  <button class="sdot" onclick="go('architecture')"></button>
+  <button class="sdot" onclick="go('decisions')"></button>
+  <button class="sdot" onclick="go('live')"></button>
+  <button class="sdot" onclick="go('thanks')"></button>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="ctr-full">
+    <div class="hero-top">
+      <div>
+        <div class="hlogo fi"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M10 8.5v7l5.5-3.5L10 8.5z" fill="white"/></svg></div>
+        <div class="htitle fi">Wavely</div>
+        <p class="hsub fi">As a <strong>Cloud Customer Engineer apprenticeship candidate</strong>, I wanted to understand the technical context of the role hands-on — so I built Wavely: a music streaming app with one goal: <strong>use as many GCP services as possible, each with a real justification.</strong> That's how I learn best. The music isn't the point. The GCP is.</p>
+        <div class="hact fi">
+          <a href="https://playwavely.web.app" target="_blank" class="bhp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open live app</a>
+          <a href="https://github.com/mehrdadzeinali/mini-spotify-gcp" target="_blank" class="bhs">GitHub repo</a>
+        </div>
+      </div>
+      <div class="hright">
+        <div class="scard fi"><div class="sci" style="background:#e8f0fe"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div><div class="snum">13</div><div class="slbl">GCP & Firebase services</div></div></div>
+        <div class="scard fi" style="transition-delay:.07s"><div class="sci" style="background:#e6f4ea"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="snum">1M+</div><div class="slbl">play events in BigQuery <span style="color:var(--gray-400);font-size:11px">(by script)</span></div></div></div>
+        <div class="scard fi" style="transition-delay:.14s"><div class="sci" style="background:#fef7e0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div><div class="snum">1,000</div><div class="slbl">royalty-free tracks sourced from Jamendo <span style="color:var(--gray-400);font-size:11px">(by script)</span></div></div></div>
+        <div class="scard fi" style="transition-delay:.21s"><div class="sci" style="background:#f3e5f5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="snum">51</div><div class="slbl">test users <span style="color:var(--gray-400);font-size:11px">(by script)</span></div></div></div>
+      </div>
+    </div>
+    <div class="fi">
+      <div style="font-size:12px;color:var(--gray-400);font-weight:500;margin-bottom:18px;font-family:'Roboto Mono',monospace;letter-spacing:1px;">AT A GLANCE — 13 SERVICES</div>
+      <div class="sgrid-mini">
+        <div class="svc-m"><div class="svc-mi" style="background:#e8f0fe"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="svc-mn">GKE</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#fce8e6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div class="svc-mn">Firebase Hosting</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#fef7e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="svc-mn">Firebase Auth</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#e6f4ea"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg></div><div class="svc-mn">Firestore</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#f3e5f5"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div><div class="svc-mn">Cloud Storage</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#e8f0fe"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></div><div class="svc-mn">Pub/Sub</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#e6f4ea"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div class="svc-mn">BigQuery</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#fce8e6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="svc-mn">Cloud Armor</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#fef7e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="svc-mn">Secret Manager</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#e0f2f1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00897b" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="svc-mn">Workload Identity</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#e6f4ea"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="svc-mn">Cloud Build</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#fce8e6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><div class="svc-mn">Artifact Registry</div></div>
+        <div class="svc-m"><div class="svc-mi" style="background:#e8f0fe"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></div><div class="svc-mn">GKE Gateway</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="ctr">
+    <div class="lbl">What it does</div>
+    <div class="stitle fi">Like any music app — but built on GCP</div>
+    <div class="feat-grid">
+      <div class="feat-card fi"><div class="feat-ico" style="background:#e8f0fe"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div class="feat-title">Stream music</div><div class="feat-desc">1000 royalty-free tracks from Jamendo. Persistent player with shuffle, loop, and ±15s skip.</div></div>
+      <div class="feat-card fi"><div class="feat-ico" style="background:#fce8e6"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="feat-title">Like & playlists</div><div class="feat-desc">Like songs, create playlists, add or remove tracks. Everything syncs in real time.</div></div>
+      <div class="feat-card fi"><div class="feat-ico" style="background:#e6f4ea"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="feat-title">Search</div><div class="feat-desc">Search across all 1000 songs by title or artist.</div></div>
+      <div class="feat-card fi"><div class="feat-ico" style="background:#f3e5f5"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div><div class="feat-title">Browse by genre</div><div class="feat-desc">80+ genres. Click to see all matching songs and play them.</div></div>
+      <div class="feat-card fi"><div class="feat-ico" style="background:#fef7e0"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="feat-title">Trending Now</div><div class="feat-desc">The 20 most-played songs — powered by real BigQuery data. Not mocked.</div></div>
+      <div class="feat-card fi"><div class="feat-ico" style="background:#e8f0fe"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="feat-title">For You</div><div class="feat-desc">BigQuery analyses your listening history and suggests songs from your favourite genres.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDE -->
+<section id="guide">
+  <div class="ctr" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+    <div class="lbl">Before we go deeper</div>
+    <div class="stitle fi">Not interested in technical details?</div>
+    <div class="fi" style="max-width:560px;width:100%;">
+      <div class="guide-card gc-nt">
+        <div class="guide-hd" style="justify-content:center;"><div class="guide-badge">⭐</div><div><div class="guide-tag gt-nt">Not technical?</div><div class="guide-title">Read only the starred boxes — skip the rest.</div></div></div>
+        <div class="guide-ex ge-nt" style="margin-top:0;text-align:left">⭐ "Cloud Armor is like a bouncer at the door — it blocks bad actors before they get close."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="ctr-full">
+    <div class="lbl">Step by step</div>
+    <div class="stitle fi">What happens when you type the URL?</div>
+    <p class="sbody fi">Follow one request — from your browser to the music playing. Click each step.</p>
+
+    <div class="arch-outer fi">
+      <!-- DIAGRAM — nodes positioned by JS after render -->
+      <div class="arch-diagram" id="arch-diagram">
+        <svg id="arch-svg">
+          <defs>
+            <marker id="mb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 2L8 5L1 8" fill="none" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round"/></marker>
+            <marker id="mr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 2L8 5L1 8" fill="none" stroke="#d93025" stroke-width="1.5" stroke-linecap="round"/></marker>
+            <marker id="mo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 2L8 5L1 8" fill="none" stroke="#e37400" stroke-width="1.5" stroke-linecap="round"/></marker>
+            <marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 2L8 5L1 8" fill="none" stroke="#1e8e3e" stroke-width="1.5" stroke-linecap="round"/></marker>
+            <marker id="mw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 2L8 5L1 8" fill="none" stroke="#9aa0a6" stroke-width="1.5" stroke-linecap="round"/></marker>
+            <marker id="mp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 2L8 5L1 8" fill="none" stroke="#4f6ef7" stroke-width="1.5" stroke-linecap="round"/></marker>
+          </defs>
+        </svg>
+
+        <!-- ROW 1: SPA (left-center) + Firebase Auth (right) -->
+        <div class="an" id="n-spa" data-step="0" onclick="setStep(0)"
+          style="border-color:#4f6ef7;background:#eef0ff;color:#4f6ef7;">
+          <div class="an-ico" style="background:#d0d5ff"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <div class="an-info"><div class="an-name">Angular 21 SPA</div><div class="an-sub">Firebase Hosting + Cloud CDN</div></div>
+        </div>
+
+        <div class="an" id="n-auth" data-step="1" onclick="setStep(1)"
+          style="border-color:#e37400;background:#fef7e0;color:#e37400;">
+          <div class="an-ico" style="background:#fde3a7"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <div class="an-info"><div class="an-name">Firebase Auth</div><div class="an-sub">JWT token</div></div>
+        </div>
+
+        <!-- ROW 2: Cloud Armor (center) -->
+        <div class="an" id="n-armor" data-step="2" onclick="setStep(2)"
+          style="border-color:#d93025;background:#fce8e6;color:#d93025;">
+          <div class="an-ico" style="background:#f8c4c2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="an-info"><div class="an-name">Cloud Armor</div><div class="an-sub">DDoS · 1000 req/10s → HTTP 429</div></div>
+        </div>
+
+        <!-- ROW 3: GKE Gateway (center) -->
+        <div class="an" id="n-gw" data-step="3" onclick="setStep(3)"
+          style="border-color:#1a73e8;background:#1a73e8;color:#fff;">
+          <div class="an-ico" style="background:rgba(255,255,255,.18)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <div class="an-info"><div class="an-name">GKE Gateway — L7 Load Balancer</div><div class="an-sub" style="opacity:.75">HTTPS · SSL · path-based routing</div></div>
+        </div>
+
+        <!-- ROW 4: 3 microservices (evenly spaced inside GKE region) -->
+        <div class="an-region" id="gke-region"></div>
+
+        <div class="an" id="n-songs" data-step="4" onclick="setStep(4)"
+          style="border-color:#7b1fa2;background:#f3e5f5;color:#7b1fa2;">
+          <div class="an-ico" style="background:#e1bee7"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <div class="an-info"><div class="an-name">songs-service</div><div class="an-sub">:3001</div></div>
+        </div>
+
+        <div class="an" id="n-pl" data-step="5" onclick="setStep(5)"
+          style="border-color:#7b1fa2;background:#f3e5f5;color:#7b1fa2;">
+          <div class="an-ico" style="background:#e1bee7"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
+          <div class="an-info"><div class="an-name">playlists-service</div><div class="an-sub">:3002</div></div>
+        </div>
+
+        <div class="an" id="n-st" data-step="6" onclick="setStep(6)"
+          style="border-color:#7b1fa2;background:#f3e5f5;color:#7b1fa2;">
+          <div class="an-ico" style="background:#e1bee7"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <div class="an-info"><div class="an-name">streaming-service</div><div class="an-sub">:3003</div></div>
+        </div>
+
+        <!-- ROW 5: bottom data stores (4 nodes evenly spaced) -->
+        <div class="an" id="n-cs" data-step="7" onclick="setStep(7)"
+          style="border-color:#9aa0a6;background:var(--gray-50);color:var(--gray-600);">
+          <div class="an-ico" style="background:#e8eaed"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
+          <div class="an-info"><div class="an-name">Cloud Storage</div><div class="an-sub">1000 MP3s</div></div>
+        </div>
+
+        <div class="an" id="n-fs" data-step="8" onclick="setStep(8)"
+          style="border-color:#e37400;background:#fef7e0;color:#e37400;">
+          <div class="an-ico" style="background:#fde3a7"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg></div>
+          <div class="an-info"><div class="an-name">Cloud Firestore</div><div class="an-sub">all 3 services</div></div>
+        </div>
+
+        <div class="an" id="n-ps" data-step="9" onclick="setStep(9)"
+          style="border-color:#1e8e3e;background:#e6f4ea;color:#1e8e3e;">
+          <div class="an-ico" style="background:#b9e4c4"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></div>
+          <div class="an-info"><div class="an-name">Cloud Pub/Sub</div><div class="an-sub">streaming only</div></div>
+        </div>
+
+        <div class="an" id="n-bq" data-step="10" onclick="setStep(10)"
+          style="border-color:#1e8e3e;background:#e6f4ea;color:#1e8e3e;">
+          <div class="an-ico" style="background:#b9e4c4"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="an-info"><div class="an-name">BigQuery</div><div class="an-sub">1M+ rows</div></div>
+        </div>
+
+      </div><!-- end arch-diagram -->
+
+      <!-- STORY PANEL -->
+      <div class="arch-story">
+        <div class="step-ctr" id="step-ctr">Step 1 of 11</div>
+        <div class="step-card">
+          <div class="step-ico-w" id="step-ico"></div>
+          <div class="step-title" id="step-title"></div>
+          <div class="step-nt">
+            <div class="step-nt-hd"><div class="step-nt-badge">⭐</div><div class="step-nt-tag">In plain words</div></div>
+            <div class="step-nt-text" id="step-nt"></div>
+          </div>
+          <span class="step-t-tag">Technical</span>
+          <div class="step-t" id="step-t"></div>
+          <div class="step-nav">
+            <button class="step-btn step-btn-s" id="btn-prev" onclick="setStep(cur-1)">← Prev</button>
+            <button class="step-btn step-btn-p" id="btn-next" onclick="setStep(cur+1)">Next →</button>
+            <div class="step-dots" id="step-dots"></div>
+          </div>
+        </div>
+        <div class="lgnd" style="margin-top:16px;">
+          <div class="li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#4f6ef7" stroke-width="2"/></svg>SPA</div>
+          <div class="li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#d93025" stroke-width="2"/></svg>filtered</div>
+          <div class="li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#e37400" stroke-width="2"/></svg>read/write</div>
+          <div class="li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#1e8e3e" stroke-width="2"/></svg>async</div>
+          <div class="li"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="#1e8e3e" stroke-width="2" stroke-dasharray="4,3"/></svg>query</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISIONS -->
+<section id="decisions">
+  <div class="ctr">
+    <div class="lbl">Why each service</div>
+    <div class="stitle fi">13 choices. 13 reasons.</div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#d93025"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#fce8e6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="dec-title">Cloud Armor</div><div class="dec-sub">DDoS protection · rate limiting</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">My app is on the internet — anyone can try to flood it with requests to break it. Cloud Armor is the bouncer: it blocks bad actors automatically before they reach anything.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">The moment I exposed my GKE Gateway, I had a public IP. <strong>A script sending thousands of requests per second could take down all 3 services at once.</strong> Cloud Armor sits in front of the Gateway — same infrastructure Google uses for Search and Gmail. Rate limit: <strong>1000 req/10s/IP → HTTP 429.</strong> Attached to all 3 backend services. Traffic filtered at the network layer before reaching any pod.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#1a73e8"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#e8f0fe"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div><div class="dec-title">GKE — 3 independent microservices</div><div class="dec-sub">songs · playlists · streaming · each scales on its own</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">Instead of one big app, I split the backend into 3 focused apps. When one gets busy, only that one scales up — the others stay small. More efficient, more resilient.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Cloud Run would have been simpler. I chose GKE to learn Kubernetes properly. <strong>Each service has its own HPA: 2–10 pods at 70% CPU.</strong> If streaming spikes, only streaming-service scales. Workload Identity: pods authenticate to GCP without JSON key files — no leak risk, no rotation headache.</p>
+      <div class="facts">
+        <div class="fact"><div class="fdot" style="background:#1a73e8"></div>songs-service (:3001) — catalog, search, trending, recommendations</div>
+        <div class="fact"><div class="fdot" style="background:#1a73e8"></div>playlists-service (:3002) — playlist CRUD</div>
+        <div class="fact"><div class="fdot" style="background:#1a73e8"></div>streaming-service (:3003) — play/skip/like events → Pub/Sub</div>
+      </div>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#1e8e3e"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#e6f4ea"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></div><div><div class="dec-title">Cloud Pub/Sub → BigQuery</div><div class="dec-sub">Async analytics pipeline · fire-and-forget</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">When you press play, the app says "done!" instantly and quietly records it in the background. You never wait. That's Pub/Sub — an invisible background messenger.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">A direct BigQuery write adds 100–500ms to every play event. Instead, streaming-service <strong>publishes to Pub/Sub and returns 200 OK immediately.</strong> A native BigQuery subscription ingests events automatically — <strong>zero consumer code written.</strong> Messages persist 7 days if BigQuery is unavailable. 1M+ rows (by script) power trending and recommendations.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#e37400"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#fef7e0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg></div><div><div class="dec-title">Cloud Firestore</div><div class="dec-sub">Operational database · songs, playlists, likes</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">The main database — stores the song catalog, your playlists, and liked songs. All 3 apps share it. It runs and scales itself, no maintenance needed.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Firestore over Cloud SQL: Jamendo metadata is inconsistent across tracks — <strong>flexible schema is a genuine advantage.</strong> No connection pool, native Firebase Auth integration, security rules enforced at DB level. Intentional separation: <strong>Firestore for operational reads/writes, BigQuery for analytical queries.</strong></p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#e37400"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#fef7e0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><div><div class="dec-title">Firebase Authentication</div><div class="dec-sub">User identity · JWT on every request</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">When you log in, you get a digital pass (JWT token). Every action your browser takes, it shows that pass to the backend. Without it, the backend refuses to respond.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Firebase Auth issues a signed JWT on login. <strong>Every API route on all 3 services verifies it server-side via Firebase Admin SDK.</strong> Chosen for native Firestore security rules integration — same identity enforced at API and database layers. 51 test users created by script.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#d93025"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#fce8e6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><div class="dec-title">Firebase Hosting + Cloud CDN</div><div class="dec-sub">Global frontend delivery</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">When you type playwavely.web.app, the app loads from the server closest to you — not from a single machine in France. Paris, Tokyo, New York — same fast experience.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Angular SPA on Firebase Hosting, automatically backed by Cloud CDN. Chosen because <strong>Cloud Build deploys directly via a Firebase CLI token stored in Secret Manager</strong> — seamless CD pipeline. Zero server management, automatic SSL, global edge caching.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#7b1fa2"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#f3e5f5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div><div><div class="dec-title">Cloud Storage</div><div class="dec-sub">1000 MP3 files · SPA reads directly · no backend proxy</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">The music files are stored in Google's cloud. When you press play, your browser fetches the audio directly — no middleman app in between. Faster, simpler, cheaper.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">The SPA streams MP3s directly from Cloud Storage URLs — <strong>bypassing all 3 microservices entirely.</strong> Audio through the API would add latency, waste pod resources, and introduce a failure point. Direct object storage is the right architecture for media delivery. Files sourced from Jamendo by script (Creative Commons).</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#e37400"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#fef7e0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><div class="dec-title">Secret Manager</div><div class="dec-sub">API keys · Firebase token · Angular env — never in git</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">API keys must never be public. Secret Manager is a secure vault — keys stay encrypted there, and only the build system can fetch them when needed.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">The Angular <strong>environment.ts</strong> contains Firebase API keys — committing it to GitHub exposes them. <strong>Cloud Build fetches it from Secret Manager at build time and injects it.</strong> Never in the repository. Same for the Firebase CLI deployment token.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#00897b"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#e0f2f1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00897b" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="dec-title">IAM + Workload Identity</div><div class="dec-sub">GKE pod authentication · no key files anywhere</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">The 3 apps need permission to access the database. Instead of a password file (which can be stolen), Workload Identity gives each app a digital ID that Google recognises automatically — nothing to steal.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Without Workload Identity, each pod needs a JSON key file — <strong>files don't expire, can leak in images or logs, painful to rotate.</strong> Workload Identity links the Kubernetes service account to a GCP IAM service account via the metadata server. Zero credentials stored anywhere in the cluster.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#1e8e3e"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#e6f4ea"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div><div class="dec-title">Cloud Build</div><div class="dec-sub">Continuous deployment · git push → live in ~10 min</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">Every time I push code to GitHub, the app updates itself automatically in ~10 minutes. No manual work needed.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Trigger fires on every push to main: builds 3 Docker images → Artifact Registry → kubectl rollout restart → fetches environment.ts from Secret Manager → ng build → firebase deploy. <strong>Backend + frontend in one cloudbuild.yaml.</strong> CD, not CI — no automated tests yet.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#d93025"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#fce8e6"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><div><div class="dec-title">Artifact Registry</div><div class="dec-sub">Docker image storage · same region as GKE</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">When Cloud Build packages the 3 apps, it creates containers — like boxes with everything needed to run. Artifact Registry is the warehouse where those boxes live before deployment.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story">Images stored in europe-west1 — <strong>same region as the GKE cluster</strong> to avoid cross-region egress costs and reduce pull latency. Replaces Container Registry with finer IAM control per repository.</p>
+    </div>
+
+    <div class="dec fi">
+      <div class="dec-stripe" style="background:#1a73e8"></div>
+      <div class="dec-hd"><div class="dec-ico" style="background:#e8f0fe"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div><div class="dec-title">GKE Gateway — L7 Load Balancer</div><div class="dec-sub">Single entry point · path routing · Cloud Armor attachment</div></div></div>
+      <div class="nt-box"><div class="nt-hd"><div class="nt-badge">⭐</div><div class="nt-tag">In plain words</div></div><div class="nt-text">3 backend apps, one address. The Gateway reads the URL and sends each request to the right app — like a receptionist directing visitors in a building.</div></div>
+      <span class="t-tag">Technical</span>
+      <p class="t-story"><strong>gke-l7-global-external-managed</strong> with HTTPRoute. Chosen over Ingress for the modern GKE-native approach and <strong>Cloud Armor attachment directly to backend services.</strong> SSL via Certificate Manager. /songs/* · /playlists/* · /streaming/*.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIVE -->
+<section id="live">
+  <div class="ctr">
+    <div class="lbl fi">See it for yourself</div>
+    <div class="stitle fi">It's live. Right now.</div>
+    <p class="sbody fi" style="text-align:center;max-width:540px;">Every service running on Google Cloud. Deployed automatically on every git push.</p>
+    <a href="https://playwavely.web.app" target="_blank" class="lbtn fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open Wavely</a>
+    <div class="lurl fi">playwavely.web.app</div>
+    <div class="srow fi">
+      <div class="si"><div class="num" style="color:var(--blue)">13</div><div class="lbl2">GCP services</div></div>
+      <div class="si"><div class="num" style="color:var(--green)">1,000</div><div class="lbl2">songs</div></div>
+      <div class="si"><div class="num" style="color:#e37400">1M+</div><div class="lbl2">BigQuery events</div></div>
+      <div class="si"><div class="num" style="color:var(--red)">3</div><div class="lbl2">microservices</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THANKS -->
+<section id="thanks">
+  <div class="ctr">
+    <div class="ttitle fi">Thank you</div>
+    <div class="tname fi">Mehrdad Zeinali</div>
+    <div class="trole fi">Software Engineering Apprentice · BNP Paribas CIB · Paris</div>
+    <div class="tlinks fi">
+      <a href="https://playwavely.web.app" target="_blank" class="tlink"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>playwavely.web.app</a>
+      <a href="https://github.com/mehrdadzeinali/mini-spotify-gcp" target="_blank" class="tlink"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
+    </div>
+  </div>
+</section>
+
+<script>
+// ─── LAYOUT: position nodes programmatically after DOM paint ───
+// This guarantees no overlaps — we use fixed px coordinates based on diagram width.
+
+function layoutNodes() {
+  const diag = document.getElementById('arch-diagram');
+  if (!diag) return;
+  const W = diag.offsetWidth;
+  const H = 900;
+
+  // Helper: center a node horizontally at cx, top at y
+  function place(id, cx, y) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.top = y + 'px';
+    // Initially offscreen-right so we can measure width
+    el.style.left = '-9999px';
+    el.style.visibility = 'hidden';
+  }
+
+  // First pass: place off-screen to measure
+  const nodes = ['n-spa','n-auth','n-armor','n-gw','n-songs','n-pl','n-st','n-cs','n-fs','n-ps','n-bq'];
+  nodes.forEach(id => place(id, 0, 0));
+
+  // Force reflow to get widths
+  requestAnimationFrame(() => {
+    function w(id) { const el=document.getElementById(id); return el ? el.offsetWidth : 0; }
+
+    // ROW Y positions
+    const y1 = 20;   // SPA + Auth
+    const y2 = 140;  // Cloud Armor
+    const y3 = 260;  // GKE Gateway
+    const y4 = 430;  // 3 services (inside GKE region)
+    const y5 = 640;  // bottom data stores
+
+    // GKE region
+    const regionTop = y3 + 90;
+    const regionH   = 200;
+
+    // ROW 1: SPA centered at ~35%, Auth at ~80%
+    const spaX  = Math.round(W * 0.30);
+    const authX = Math.round(W * 0.75);
+
+    // ROW 2: Armor centered
+    const armorX = Math.round(W * 0.40);
+
+    // ROW 3: Gateway centered
+    const gwX = Math.round(W * 0.40);
+
+    // ROW 4: 3 services — evenly spaced across full width
+    const gap4  = Math.round(W / 4);
+    const songsX = gap4 * 0.75;
+    const plX    = gap4 * 1.75;
+    const stX    = gap4 * 2.75;
+
+    // ROW 5: 4 stores — evenly spaced
+    const gap5   = Math.round(W / 5);
+    const csX    = gap5 * 0.5;
+    const fsX    = gap5 * 1.75;
+    const psX    = gap5 * 3;
+    const bqX    = gap5 * 4.75;
+
+    function set(id, cx, y) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const nw = el.offsetWidth;
+      el.style.left = Math.max(0, cx - nw/2) + 'px';
+      el.style.top  = y + 'px';
+      el.style.visibility = 'visible';
+    }
+
+    set('n-spa',   spaX,   y1);
+    set('n-auth',  authX,  y1);
+    set('n-armor', armorX, y2);
+    set('n-gw',    gwX,    y3);
+    set('n-songs', songsX, y4);
+    set('n-pl',    plX,    y4);
+    set('n-st',    stX,    y4);
+    set('n-cs',    csX,    y5);
+    set('n-fs',    fsX,    y5);
+    set('n-ps',    psX,    y5);
+    set('n-bq',    bqX,    y5);
+
+    // GKE region box
+    const region = document.getElementById('gke-region');
+    if (region) {
+      region.style.left   = '10px';
+      region.style.top    = regionTop + 'px';
+      region.style.width  = (W - 100) + 'px';
+      region.style.height = regionH + 'px';
+    }
+
+    // GKE label
+    const lbl = document.getElementById('gke-label');
+    if (lbl) {
+      lbl.style.left = '24px';
+      lbl.style.top  = (regionTop + 10) + 'px';
+    }
+
+    // Now draw current step arrows
+    drawStep(cur);
+  });
+}
+
+// ─── STEP DATA ───
+const STEPS = [
+  {id:'n-spa',ibg:'#eef0ff',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+   title:'You type playwavely.web.app',
+   nt:'You type a website address into your browser. Behind the scenes, that address gets converted into a numeric IP so your browser knows which server to connect to. Google then serves the app from the closest server to you — whether you\'re in Paris or Tokyo. Fast, anywhere in the world.',
+   t:'Angular SPA deployed on <strong>Firebase Hosting, backed by Cloud CDN</strong>. Static assets cached at the nearest edge node. DNS resolves → CDN serves the bundle → Angular boots.',
+   hi:['n-spa']},
+  {id:'n-auth',ibg:'#fef7e0',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+   title:'You log in — you get your pass',
+   nt:'You enter your credentials. Firebase Auth verifies your identity and gives you a JWT token — a digital pass. Your browser attaches it to every action from now on. Without it, the backend refuses.',
+   t:'<strong>Firebase Auth</strong> issues a signed JWT on login. Every API request carries it as Authorization: Bearer. All 3 microservices verify it server-side via Firebase Admin SDK before processing anything.',
+   hi:['n-spa','n-auth']},
+  {id:'n-armor',ibg:'#fce8e6',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+   title:'The bouncer checks you',
+   nt:'Before reaching any backend, Cloud Armor checks your behaviour — not your identity. Sending too many requests too fast? Blocked with HTTP 429. Normal users never see this.',
+   t:'<strong>Cloud Armor</strong> in front of the GKE Gateway. Rate limit: <strong>1000 req/10s/IP → HTTP 429.</strong> Attached to all 3 backend services. Same infra Google uses for Search and Gmail.',
+   hi:['n-spa','n-armor']},
+  {id:'n-gw',ibg:'#e8f0fe',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+   title:'The Gateway routes your request',
+   nt:'3 backend apps, one address. The Gateway reads the URL and sends each request to the right app — like a receptionist. /songs → songs app. /playlists → playlist app. /streaming → streaming app.',
+   t:'<strong>GKE Gateway (L7 global external LB)</strong> with HTTPRoute: /songs/* → songs-service, /playlists/* → playlists-service, /streaming/* → streaming-service. SSL terminated here via Certificate Manager.',
+   hi:['n-armor','n-gw']},
+  {id:'n-songs',ibg:'#f3e5f5',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+   title:'songs-service handles your search',
+   nt:'Browse songs, search by title or artist, see what\'s Trending, and get your For You recommendations. This is the most data-heavy service — it\'s the only one that reads BigQuery.',
+   t:'<strong>songs-service (:3001)</strong> — catalog, search, trending, recommendations. Only service reading BigQuery: trending (COUNT * GROUP BY songId) and reco (top genres per user → Firestore). 2–10 pods via HPA.',
+   hi:['n-gw','n-songs']},
+  {id:'n-pl',ibg:'#f3e5f5',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>',
+   title:'playlists-service manages your library',
+   nt:'Create a playlist, add or remove songs — that goes here. Simple, focused, one job only.',
+   t:'<strong>playlists-service (:3002)</strong> — full playlist CRUD. Reads/writes Firestore only. No analytics, no events. Clean separation of concerns. 2–10 pods via HPA.',
+   hi:['n-gw','n-pl']},
+  {id:'n-st',ibg:'#f3e5f5',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+   title:'You press play — recorded instantly',
+   nt:'streaming-service receives your event, immediately says "done!", and quietly records it in the background. You never wait. The analytics happen after you\'ve already started listening.',
+   t:'<strong>streaming-service (:3003)</strong> — play/skip/like events. <strong>Publishes to Pub/Sub immediately (fire-and-forget), returns 200 OK.</strong> Likes written to Firestore synchronously (needed in UI). 2–10 pods via HPA.',
+   hi:['n-gw','n-st']},
+  {id:'n-cs',ibg:'#e8eaed',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+   title:'The music streams directly to you',
+   nt:'Your browser fetches the audio file directly from Cloud Storage — Google\'s file storage. No middleman app in between. Direct access means music starts fast.',
+   t:'SPA streams MP3s directly from <strong>Cloud Storage URLs — bypassing all 3 microservices entirely.</strong> Audio through the API would add latency and waste pod resources. Direct object storage is the right architecture for media delivery. 1000 files sourced by script from Jamendo.',
+   hi:['n-spa','n-cs']},
+  {id:'n-fs',ibg:'#fef7e0',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e37400" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>',
+   title:'Firestore — the main database',
+   nt:'The song catalog, your playlists, and liked songs — all stored here. All 3 backend apps share this database. It scales and manages itself automatically.',
+   t:'<strong>Cloud Firestore</strong> — operational data store shared by all 3 services. Flexible schema, no connection pool, Firebase Auth security rules enforced at DB level. Intentional: <strong>Firestore for ops, BigQuery for analytics.</strong>',
+   hi:['n-songs','n-pl','n-st','n-fs']},
+  {id:'n-ps',ibg:'#e6f4ea',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>',
+   title:'Pub/Sub — the background messenger',
+   nt:'streaming-service drops your play event here like a letter in a mailbox, then moves on immediately. Pub/Sub holds it and delivers it to BigQuery in the background.',
+   t:'<strong>Cloud Pub/Sub</strong> — streaming-service only. Native BigQuery subscription ingests automatically — <strong>zero consumer code.</strong> Messages persist 7 days if BigQuery is unavailable. Fully decoupled async pipeline.',
+   hi:['n-st','n-ps']},
+  {id:'n-bq',ibg:'#e6f4ea',
+   icon:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e8e3e" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>',
+   title:'BigQuery — the analytics brain',
+   nt:'BigQuery knows every song ever played by everyone. It finds the 20 most popular right now (Trending) and which genres you love most (For You). It analyses 1 million+ events instantly.',
+   t:'<strong>BigQuery</strong> — 1M+ rows (seeded by script, 51 users with different preferences). songs-service queries trending (SELECT songId COUNT(*) GROUP BY ORDER BY plays DESC LIMIT 20) and reco (top 3 genres per user). Only songs-service reads BigQuery.',
+   hi:['n-ps','n-bq','n-songs']},
+];
+
+const TOTAL = STEPS.length;
+let cur = 0;
+
+const dotsEl = document.getElementById('step-dots');
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('button');
+  d.className = 'step-dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => setStep(i);
+  dotsEl.appendChild(d);
+}
+
+function setStep(n) {
+  if (n < 0 || n >= TOTAL) return;
+  cur = n;
+  const s = STEPS[n];
+  document.getElementById('step-ctr').textContent = `Step ${n+1} of ${TOTAL}`;
+  document.getElementById('step-ico').innerHTML = s.icon;
+  document.getElementById('step-ico').style.background = s.ibg;
+  document.getElementById('step-title').textContent = s.title;
+  document.getElementById('step-nt').textContent = s.nt;
+  document.getElementById('step-t').innerHTML = s.t;
+  document.getElementById('btn-prev').disabled = n === 0;
+  document.getElementById('btn-next').disabled = n === TOTAL - 1;
+  document.getElementById('btn-next').textContent = n === TOTAL - 1 ? 'Done ✓' : 'Next →';
+  document.querySelectorAll('.step-dot').forEach((d,i) => d.classList.toggle('active', i === n));
+  document.querySelectorAll('.an').forEach(el => {
+    const id = el.id;
+    if (s.hi.includes(id)) { el.classList.remove('dimmed'); el.classList.toggle('highlighted', id === s.id); }
+    else { el.classList.add('dimmed'); el.classList.remove('highlighted'); }
+  });
+  drawStep(n);
+}
+
+// ─── ARROWS ───
+function drawStep(n) {
+  const svg = document.getElementById('arch-svg');
+  svg.querySelectorAll('line,path,text').forEach(e => e.remove());
+  const wrap = document.getElementById('arch-diagram');
+  if (!wrap) return;
+  const wr = wrap.getBoundingClientRect();
+
+  function p(id) {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { cx:r.left-wr.left+r.width/2, cy:r.top-wr.top+r.height/2,
+      top:r.top-wr.top, bot:r.top-wr.top+r.height,
+      left:r.left-wr.left, right:r.left-wr.left+r.width,
+      w:r.width, h:r.height };
+  }
+
+  function ln(x1,y1,x2,y2,c,mk,dash='') {
+    const el = document.createElementNS('http://www.w3.org/2000/svg','line');
+    el.setAttribute('x1',x1);el.setAttribute('y1',y1);el.setAttribute('x2',x2);el.setAttribute('y2',y2);
+    el.setAttribute('stroke',c);el.setAttribute('stroke-width','2');
+    if (dash) el.setAttribute('stroke-dasharray',dash);
+    el.setAttribute('marker-end',`url(#${mk})`);svg.appendChild(el);
+  }
+
+  function cv(d,c,mk,dash='') {
+    const el = document.createElementNS('http://www.w3.org/2000/svg','path');
+    el.setAttribute('d',d);el.setAttribute('fill','none');
+    el.setAttribute('stroke',c);el.setAttribute('stroke-width','2');
+    if (dash) el.setAttribute('stroke-dasharray',dash);
+    el.setAttribute('marker-end',`url(#${mk})`);svg.appendChild(el);
+  }
+
+  function lb(x,y,txt,c,anchor='middle') {
+    const el = document.createElementNS('http://www.w3.org/2000/svg','text');
+    el.setAttribute('x',x);el.setAttribute('y',y);el.setAttribute('fill',c);
+    el.setAttribute('font-size','10');el.setAttribute('font-family','Roboto Mono,monospace');
+    el.setAttribute('text-anchor',anchor);el.setAttribute('font-weight','600');
+    el.textContent=txt;svg.appendChild(el);
+  }
+
+  const spa=p('n-spa'),auth=p('n-auth'),armor=p('n-armor'),gw=p('n-gw');
+  const songs=p('n-songs'),pl=p('n-pl'),st=p('n-st');
+  const cs=p('n-cs'),fs=p('n-fs'),ps=p('n-ps'),bq=p('n-bq');
+  if (!spa) return;
+
+  if (n===1&&auth) {
+    cv(`M ${spa.right} ${spa.cy-4} C ${auth.left-20} ${spa.cy-4} ${auth.left-20} ${auth.cy} ${auth.left} ${auth.cy}`,'#e37400','mo');
+    lb(spa.right+30,spa.cy-16,'login','#e37400','start');
+    cv(`M ${auth.left} ${auth.cy+8} C ${auth.left-20} ${auth.cy+8} ${auth.left-20} ${spa.cy+8} ${spa.right} ${spa.cy+8}`,'#e37400','mo');
+    lb(spa.right+30,spa.cy+22,'JWT token','#e37400','start');
+  }
+  if (n===2&&armor) { ln(spa.cx,spa.bot,armor.cx,armor.top,'#4f6ef7','mp'); lb(spa.cx+36,(spa.bot+armor.top)/2,'request + JWT','#4f6ef7','start'); }
+  if (n===3&&armor&&gw) { ln(armor.cx,armor.bot,gw.cx,gw.top,'#d93025','mr'); lb(armor.cx+40,(armor.bot+gw.top)/2,'filtered','#d93025','start'); }
+  if (n===4&&songs&&gw) { cv(`M ${gw.left+gw.w*.25} ${gw.bot} C ${gw.left+gw.w*.25} ${(gw.bot+songs.top)/2} ${songs.cx} ${(gw.bot+songs.top)/2} ${songs.cx} ${songs.top}`,'#9aa0a6','mw'); lb(songs.cx-8,(gw.bot+songs.top)/2-8,'/songs/*','#9aa0a6','end'); }
+  if (n===5&&pl&&gw) { ln(gw.cx,gw.bot,pl.cx,pl.top,'#9aa0a6','mw'); lb(gw.cx-2,(gw.bot+pl.top)/2-8,'/playlists/*','#9aa0a6'); }
+  if (n===6&&st&&gw) { cv(`M ${gw.left+gw.w*.75} ${gw.bot} C ${gw.left+gw.w*.75} ${(gw.bot+st.top)/2} ${st.cx} ${(gw.bot+st.top)/2} ${st.cx} ${st.top}`,'#9aa0a6','mw'); lb(st.cx+8,(gw.bot+st.top)/2-8,'/streaming/*','#9aa0a6','start'); }
+  if (n===7&&cs) {
+    cv(`M ${spa.left} ${spa.cy} C ${cs.cx} ${spa.cy} ${cs.cx} ${cs.top-30} ${cs.cx} ${cs.top}`,'#9aa0a6','mw','4,3');
+    lb(cs.cx-8,(spa.cy+cs.top)/2,'direct audio','#9aa0a6','end');
+  }
+  if (n===8&&fs) {
+    if(songs) {
+      cv(`M ${songs.cx} ${songs.bot} C ${songs.cx} ${(songs.bot+fs.cy)/2} ${fs.left-40} ${(songs.bot+fs.cy)/2} ${fs.left} ${fs.cy}`,'#e37400','mo');
+      lb(songs.cx-8, songs.bot+40, 'read/write','#e37400','end');
+    }
+    if(pl) {
+      ln(pl.cx,pl.bot,pl.cx,fs.top-10,'#e37400','mo');
+      cv(`M ${pl.cx} ${fs.top-10} L ${fs.cx} ${fs.top}`,'#e37400','mo');
+      lb(pl.cx+6, pl.bot+30, 'read/write','#e37400','start');
+    }
+    if(st) {
+      cv(`M ${st.cx} ${st.bot} C ${st.cx} ${(st.bot+fs.cy)/2} ${fs.right+40} ${(st.bot+fs.cy)/2} ${fs.right} ${fs.cy}`,'#e37400','mo');
+      lb((st.cx+fs.right)/2, (st.bot+fs.cy)/2 - 10, 'write likes','#e37400','middle');
+    }
+  }
+  if (n===9&&ps&&st) { ln(st.cx,st.bot,ps.cx,ps.top,'#1e8e3e','mg'); lb((st.cx+ps.cx)/2,(st.bot+ps.top)/2-8,'publishEvent() async','#1e8e3e'); }
+  if (n===10&&ps&&bq) {
+    ln(ps.right,ps.cy,bq.left,bq.cy,'#1e8e3e','mg','4,3');
+    lb((ps.right+bq.left)/2,ps.cy-8,'subscription (auto)','#1e8e3e');
+    if (songs) {
+      cv(`M ${bq.cx} ${bq.top} C ${bq.cx} ${(bq.top+songs.bot)/2} ${songs.cx} ${(bq.top+songs.bot)/2} ${songs.cx} ${songs.bot}`,'#1e8e3e','mg','4,3');
+      lb((bq.cx+songs.cx)/2,(bq.top+songs.bot)/2-10,'trending + reco','#1e8e3e');
+    }
+  }
+}
+
+// ─── PROGRESS + SIDE DOTS ───
+const SECS = ['hero','features','guide','architecture','decisions','live','thanks'];
+const sdots = document.querySelectorAll('.sdot');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progress').style.width = (window.scrollY/h*100) + '%';
+  SECS.forEach((id,i) => {
+    const el = document.getElementById(id); if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.top <= window.innerHeight*.5 && r.bottom >= window.innerHeight*.5) {
+      sdots.forEach(d => d.classList.remove('active'));
+      if (sdots[i]) sdots[i].classList.add('active');
+    }
+  });
+});
+
+function go(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// ─── FADE IN ───
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); });
+}, {threshold:0.1});
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+// ─── INIT ───
+window.addEventListener('load', () => {
+  layoutNodes();
+  setTimeout(() => setStep(0), 500);
+});
+window.addEventListener('resize', () => {
+  layoutNodes();
+});
+
+// Re-layout + redraw when architecture section becomes visible
+const archObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { layoutNodes(); setTimeout(() => drawStep(cur), 300); }
+}, {threshold:0.05});
+const archSec = document.getElementById('architecture');
+if (archSec) archObs.observe(archSec);
+</script>
+</body>
+</html>
